@@ -1,0 +1,2198 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RM 67-01 Anatomy</title>
+<meta name="description" content="How a Richard Mille RM 67-01 winds itself and keeps time with no battery: an interactive, hand-inked machine driven by one small model.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>:root {
+  --paper: #f5f0e5;
+  --paper2: #fbf8f1;
+  --ink: #1f2c4d;
+  --shade: #ddd4c3;
+  --cs0: #f8dcc8; --cs1: #e3ae8e; --cs2: #bf8566;
+  --st0: #8fb4ea; --st1: #4a7bcf; --st2: #30569b;
+  --ac0: #ffffff; --ac1: #dfe3e8; --ac2: #8d95a0;
+  --ui0: #ffb3a3; --ui1: #ec5a43; --ui2: #b9402e;
+  --blur: rgba(220, 205, 178, 0.55);
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Patrick Hand", "Comic Sans MS", system-ui, sans-serif;
+  font-size: 18px;
+  line-height: 1.35;
+}
+.top { max-width: 1280px; margin: 0 auto; padding: 22px 24px 0; }
+.kicker { margin: 0; font-family: Caveat, cursive; font-size: 24px; color: #6b7590; }
+h1 { margin: 2px 0 0; font-weight: 400; font-size: clamp(24px, 3.2vw, 38px); line-height: 1.15; }
+.grid { max-width: 1280px; margin: 0 auto; padding: 14px 24px 60px; display: grid; grid-template-columns: 264px minmax(0, 1fr); gap: 22px; align-items: start; }
+.side { position: sticky; top: 14px; }
+.mode { display: inline-flex; border: 1.5px solid var(--ink); border-radius: 999px; overflow: hidden; margin-bottom: 12px; background: var(--paper2); }
+.mode button { font: inherit; border: 0; background: none; color: var(--ink); padding: 6px 16px; cursor: pointer; }
+.mode button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.steps button {
+  width: 100%; display: flex; align-items: center; gap: 10px; text-align: left;
+  font: inherit; font-size: 17px; color: var(--ink); background: var(--paper2);
+  border: 1.5px solid var(--ink); border-radius: 999px; padding: 6px 14px 6px 6px; cursor: pointer;
+  box-shadow: 3px 3px 0 var(--shade); transition: opacity .3s, background .3s, transform .15s;
+}
+.steps .n { flex: none; width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--ink); display: grid; place-items: center; background: var(--paper); font-size: 17px; }
+.steps button:disabled { cursor: default; }
+.steps button[data-state="later"] { opacity: .62; }
+.steps button:not([data-state="running"]):hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--shade); opacity: 1; }
+.steps button[data-state="done"] { opacity: .5; box-shadow: none; }
+.steps button[data-state="done"] .n { background: var(--ink); color: var(--paper); }
+.steps button[data-state="running"] { background: var(--ui1); color: #fff; border-color: var(--ink); }
+.steps button[data-state="running"] .n { background: #fff; color: var(--ink); }
+.steps button[data-state="next"]:not(:disabled):hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--shade); }
+.steps button.pulse .n { animation: pulse 1.3s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(236, 90, 67, .55); } 50% { box-shadow: 0 0 0 7px rgba(236, 90, 67, 0); } }
+.restart { display: inline-block; margin-top: 14px; color: var(--ink); font-size: 17px; }
+.stage { min-width: 0; }
+.hint { margin: 0 0 10px; min-height: 2.7em; font-size: 21px; background: var(--paper2); border: 1.5px solid var(--ink); border-radius: 14px; padding: 8px 14px; box-shadow: 3px 3px 0 var(--shade); }
+.card { position: relative; }
+.flipbtn { position: absolute; top: 1.6%; left: calc(9.6% + 10px); z-index: 2; font: inherit; font-size: 17px; color: var(--ink); background: var(--paper2); border: 1.5px solid var(--ink); border-radius: 999px; padding: 3px 14px; cursor: pointer; box-shadow: 3px 3px 0 var(--shade); }
+.flipbtn:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--shade); }
+.flipbtn[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+#fig { display: block; width: 100%; height: auto; }
+.readout { position: absolute; left: 22px; bottom: 10px; margin: 0; font-size: 15px; color: #59627c; }
+.big { font-family: Caveat, cursive; font-size: 34px; margin: 6px 0 8px; text-align: center; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips.facts { margin-top: 6px; }
+.chip { background: var(--paper2); border: 1.2px solid #b9b2a2; border-radius: 999px; padding: 2px 10px; font-size: 15px; white-space: nowrap; }
+.chip.lv { border-color: var(--ink); }
+.chip.lv:empty { display: none; }
+.chip.bad { background: #fde3dd; }
+.chip.good { background: #e3f3e6; }
+.src { font-style: normal; font-size: 12px; border-radius: 6px; padding: 0 5px; margin-left: 3px; border: 1px solid; }
+.src.rm { color: #2f6a3d; border-color: #9bc4a4; }
+.src.std { color: #6a5a20; border-color: #d1bf7c; }
+.src.est { color: #9b3a2a; border-color: #e3a497; }
+.row2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 16px; margin-top: 16px; }
+.panel { background: var(--paper2); border: 1.5px solid var(--ink); border-radius: 16px; padding: 10px 14px 12px; box-shadow: 3px 3px 0 var(--shade); min-width: 0; }
+.panel h2 { margin: 0 0 6px; font-weight: 400; font-size: 24px; }
+.small { font-size: 14px; color: #5b6480; margin: 6px 0 0; }
+.swatches { display: flex; flex-wrap: wrap; gap: 6px; }
+.sw { font: inherit; font-size: 15px; display: inline-flex; align-items: center; gap: 6px; border: 1.2px solid var(--ink); background: var(--paper); border-radius: 999px; padding: 3px 10px 3px 4px; cursor: pointer; color: var(--ink); }
+.sw i { width: 22px; height: 22px; border-radius: 50%; border: 1.2px solid var(--ink); background: linear-gradient(135deg, var(--a) 55%, var(--b) 55%); }
+.sw[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.acts { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 8px; }
+.acts > span { margin-right: 4px; }
+.act { font: inherit; font-size: 15px; border: 1.2px solid var(--ink); background: var(--paper); color: var(--ink); border-radius: 999px; padding: 2px 12px; cursor: pointer; }
+.act[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.sl { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; }
+.sl input { width: 100%; accent-color: var(--ui1); }
+.sl output { font-size: 16px; min-width: 12em; text-align: right; }
+.wind { border: 0; padding: 0; margin: 8px 0; display: flex; flex-wrap: wrap; gap: 4px 16px; }
+.wind legend { float: left; margin-right: 10px; }
+.week { width: 100%; height: 64px; margin-top: 8px; display: block; }
+.week .night { fill: #ebe4d6; }
+.week .wkFill { fill: var(--ui0); opacity: .55; }
+.week .wkLine { fill: none; stroke: var(--ink); stroke-width: 1.4; vector-effect: non-scaling-stroke; }
+.week .wkAxis { stroke: var(--ink); stroke-width: 1.2; vector-effect: non-scaling-stroke; }
+.cards { list-style: none; margin: 18px 0 8px; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.cards li { background: var(--paper2); border: 1.5px solid var(--ink); border-radius: 16px; padding: 10px 14px; box-shadow: 3px 3px 0 var(--shade); }
+.cards .n { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--ink); }
+.cards h3 { display: inline; margin-left: 8px; font-weight: 400; font-size: 21px; }
+.cards p { margin: 6px 0 0; font-size: 16px; }
+.showme { font: inherit; font-size: 19px; background: var(--ink); color: var(--paper); border: 0; border-radius: 999px; padding: 8px 20px; cursor: pointer; box-shadow: 3px 3px 0 var(--shade); }
+.notes { margin-top: 16px; font-size: 15px; }
+.notes summary { cursor: pointer; font-size: 18px; }
+.notes li { margin: 4px 0; }
+
+/* the drawing */
+#fig .paper { fill: var(--paper); stroke: var(--ink); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+#fig path, #fig circle, #fig rect { vector-effect: non-scaling-stroke; }
+#fig .k { fill: none; stroke: var(--ink); stroke-width: 1.2; stroke-linejoin: round; stroke-linecap: round; }
+#fig circle.k, #fig path.k[style] { stroke: var(--ink); }
+#fig .thin { stroke-width: 0.8; }
+#fig .hair { stroke-width: 0.55; }
+#fig .dash { stroke-dasharray: 3 3; }
+#fig .shade { fill: var(--shade); }
+#fig .skinShade { fill: #d9a582; opacity: 1; }
+#fig .glint { fill: none; stroke: #ffffff; stroke-width: 2.4; opacity: .55; stroke-linecap: round; }
+#fig .glint.thinG { stroke-width: 1.2; }
+#fig .spring { fill: none; stroke: #e8eef7; stroke-width: 0.9; }
+#fig .tpt { fill: url(#tptP); stroke: var(--ink); stroke-width: 1.2; }
+#fig .num { font-family: "Patrick Hand", sans-serif; font-size: 4.4px; text-anchor: middle; fill: #ffffff; stroke: #10141c; stroke-width: 0.5px; paint-order: stroke; vector-effect: none; }
+#fig .fnl { font-family: "Patrick Hand", sans-serif; font-size: 1.9px; text-anchor: middle; fill: #ffffff; }
+#fig .dnum { font-family: "Patrick Hand", sans-serif; font-size: 3.4px; text-anchor: middle; fill: #ffffff; }
+#fig .dateFrame { fill: none; stroke: #f2f2f2; stroke-width: 1; }
+#fig .tickW { fill: none; stroke: #f2f2f2; stroke-width: 0.9; stroke-linecap: round; }
+#fig .tickW.hair { stroke-width: 0.5; }
+#fig .spl { fill: none; stroke: #c9ced6; stroke-width: 0.5; }
+#fig .labBg { fill: var(--paper2); stroke: var(--ink); stroke-width: 1.2; }
+#fig .figno { font-family: Caveat, cursive; font-size: 26px; fill: var(--ink); }
+#fig .figtitle { font-family: "Patrick Hand", sans-serif; font-size: 20px; fill: var(--ink); text-anchor: end; }
+#fig .incap.big { font-size: 26px; }
+#fig .incap { font-family: Caveat, cursive; font-size: 22px; fill: #59627c; text-anchor: middle; }
+#fig .plateFace { fill: var(--paper2); stroke: var(--ink); stroke-width: 1.2; }
+#fig .arcBg { fill: none; stroke: #e9e2d3; stroke-width: 10; }
+#fig .arcFill { fill: none; stroke: var(--ui1); stroke-width: 10; opacity: .85; }
+#fig .gnum { font-size: 12px; text-anchor: middle; fill: var(--ink); font-family: "Patrick Hand", sans-serif; }
+#fig .glab { font-size: 22px; text-anchor: middle; fill: var(--ink); font-family: "Patrick Hand", sans-serif; }
+#fig .gcap { font-size: 17px; text-anchor: middle; fill: #59627c; font-family: Caveat, cursive; font-weight: 700; }
+#fig .gsmall { font-size: 13px; text-anchor: middle; fill: #59627c; font-family: "Patrick Hand", sans-serif; }
+#fig .needle { fill: var(--ui1); stroke: var(--ink); stroke-width: 1.2; }
+#fig .ghost { fill: none; stroke: var(--ink); stroke-width: 1.2; stroke-dasharray: 4 3; }
+#fig .hub { fill: var(--ink); }
+#fig .odo { fill: var(--ink); }
+#fig .odoT { fill: var(--paper); font-family: "Patrick Hand", monospace; font-size: 22px; text-anchor: middle; letter-spacing: 1px; }
+#fig .tickFace { fill: var(--paper); stroke: var(--ink); stroke-width: 1.2; }
+#fig .tickNeedle { stroke: var(--ui1); stroke-width: 2.4; stroke-linecap: round; }
+#fig .flash { fill: var(--ui1); stroke: var(--ink); stroke-width: 1.2; }
+#fig .badge { fill: var(--ink); }
+#fig .badgeT { fill: var(--paper); font-family: "Patrick Hand", sans-serif; font-size: 21px; text-anchor: middle; }
+#fig .snd { font-family: Caveat, cursive; font-weight: 700; font-size: 30px; fill: var(--ui2); text-anchor: middle; paint-order: stroke; stroke: var(--paper); stroke-width: 4px; stroke-linejoin: round; }
+#fig [data-lit] { transition: filter .35s; }
+#fig .lit { filter: drop-shadow(0 0 2.2px var(--ui1)) drop-shadow(0 0 0.6px var(--ui1)); }
+
+@media (max-width: 860px) {
+  .grid { grid-template-columns: minmax(0, 1fr); padding: 10px 16px 40px; }
+  .top { padding: 16px 16px 0; }
+  .side { position: static; }
+  .steps { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .steps button { font-size: 15px; padding: 4px 8px 4px 4px; }
+  .steps .n { width: 26px; height: 26px; }
+  .row2, .cards { grid-template-columns: minmax(0, 1fr); }
+  .hint { font-size: 18px; }
+  .readout { position: static; text-align: right; }
+  .flipbtn { position: static; display: block; margin: 0 0 8px auto; font-size: 15px; }
+  .chip { white-space: normal; }
+  .sl { grid-template-columns: minmax(0, 1fr) auto; }
+  .sl input { grid-column: 1 / -1; grid-row: 2; }
+  .sl output { min-width: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .steps button.pulse .n { animation: none; outline: 2px solid var(--ui1); }
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <p class="kicker">Someone asked me</p>
+  <h1>“How does a Richard Mille RM 67-01 wind itself and keep time with no battery?”</h1>
+</header>
+<main class="grid">
+  <aside class="side">
+    <div class="mode" role="group" aria-label="Play mode">
+      <button type="button" data-mode="manual" aria-pressed="true">Manual</button>
+      <button type="button" data-mode="auto" aria-pressed="false">Auto</button>
+    </div>
+    <ol id="steps" class="steps"></ol>
+    <a href="#" id="restart" class="restart">↺ Start over</a>
+  </aside>
+  <section class="stage">
+    <p id="hint" class="hint" aria-live="polite"></p>
+    <div class="card">
+      <button type="button" id="flip" class="flipbtn" aria-pressed="false">↻ Flip the watch over</button>
+      <svg id="fig" viewBox="0 0 1000 720" role="img" aria-label="An RM 67-01 on a wrist, and the same watch turned over to show its movement"></svg>
+      <p class="readout" id="readout" aria-live="off"></p>
+    </div>
+    <p class="big">The big idea: your wrist is the battery.</p>
+    <div id="live" class="chips live">
+      <span class="chip lv" data-k="reserve"></span><span class="chip lv" data-k="beats"></span><span class="chip lv" data-k="watch"></span><span class="chip lv" data-k="world"></span><span class="chip lv" data-k="turns"></span><span class="chip lv" data-k="amp"></span><span class="chip lv" data-k="fn"></span>
+    </div>
+    <div class="chips facts">
+      <span class="chip">28,800 vph = <b>4 Hz</b> = <b>8 ticks/s</b> <i class="src rm">RM</i></span>
+      <span class="chip">power reserve <b>≈ 50 h</b> (±10%) <i class="src rm">RM</i></span>
+      <span class="chip">movement <b>3.60 mm</b> in a <b>7.75 mm</b> case <i class="src rm">RM</i></span>
+      <span class="chip">case <b>38.70 × 47.52 mm</b> <i class="src rm">RM</i></span>
+      <span class="chip">CRMA6 <b>29.10 × 31.25 mm</b> · 25 jewels <i class="src rm">RM</i></span>
+      <span class="chip">balance 7.5 mg·cm², lift 50° <i class="src rm">RM</i></span>
+      <span class="chip">platinum rotor, <b>OneWay</b> winding <i class="src rm">RM</i></span>
+      <span class="chip">escape wheel 20 teeth <i class="src std">std.</i></span>
+      <span class="chip">amplitude 280° → 170° <i class="src std">std.</i></span>
+      <span class="chip">1,000 rotor turns to fill <i class="src est">est.</i></span>
+      <span class="chip">6.5 barrel turns to fill <i class="src est">est.</i></span>
+    </div>
+
+    <div class="row2">
+      <div class="panel">
+        <h2>Colour</h2>
+        <div class="swatches">
+          <button type="button" class="sw" data-v="rosegold" aria-pressed="true"><i style="--a:#e3ae8e;--b:#4a7bcf"></i>Rose gold</button>
+          <button type="button" class="sw" data-v="titanium" aria-pressed="false"><i style="--a:#3f4352;--b:#ec5a43"></i>Titanium</button>
+          <button type="button" class="sw" data-v="carbon" aria-pressed="false"><i style="--a:#41444c;--b:#3fbf8f"></i>Carbon TPT</button>
+          <button type="button" class="sw" data-v="white" aria-pressed="false"><i style="--a:#ebe7de;--b:#3f74d8"></i>White</button>
+          <button type="button" class="sw" data-v="blue" aria-pressed="false"><i style="--a:#4f7fcf;--b:#f2b632"></i>Blue</button>
+          <button type="button" class="sw" data-v="red" aria-pressed="false"><i style="--a:#dc4f43;--b:#ffffff"></i>Red</button>
+        </div>
+        <p class="small">Recolours the case, the strap and the hands; Carbon TPT also adds its layered pattern. Colour pairings are illustrative, not RM's catalogue.</p>
+      </div>
+      <div class="panel">
+        <h2>Break it</h2>
+        <div class="acts" role="group" aria-label="Wrist activity">
+          <span>Wrist activity</span>
+          <button type="button" class="act" data-act="walk">Just walking</button>
+          <button type="button" class="act" data-act="golf">Golf</button>
+          <button type="button" class="act" data-act="skiing">Skiing</button>
+          <button type="button" class="act" data-act="tennis">Tennis</button>
+          <button type="button" class="act" data-act="sailing">Sailing</button>
+          <button type="button" class="act" data-act="racing">Racing cars</button>
+        </div>
+        <label class="sl"><span>Steps</span><input id="act" type="range" min="0" max="15000" step="250" value="8000"><output id="actOut"></output></label>
+        <p class="small" id="actWhy"></p>
+        <fieldset class="wind"><legend>Winding</legend>
+          <label><input type="radio" name="wind" value="one" checked> OneWay (the real CRMA6)</label>
+          <label><input type="radio" name="wind" value="both"> Both ways (what-if)</label>
+        </fieldset>
+        <div id="ledger" class="chips"></div>
+        <svg id="week" viewBox="0 0 300 64" class="week" aria-label="Power reserve over a week"></svg>
+        <p class="small" id="weekCap"></p>
+        <p class="small">Step 4 winds by this ledger, and the hollow needle on the gauge shows the reserve left at bedtime once the days repeat.</p>
+      </div>
+    </div>
+
+    <ol class="cards">
+      <li><span class="n">1</span><h3>Wrist → rotor</h3><p>A heavy platinum weight hangs off-centre. Your arm moves; the weight swings and turns.</p></li>
+      <li><span class="n">2</span><h3>Rotor → spring</h3><p>Turning one way only (OneWay), it winds the mainspring through a row of small wheels.</p></li>
+      <li><span class="n">3</span><h3>Spring → tick</h3><p>The spring lets go slowly. The balance swings 8 times a second, letting the gears move one notch at a time.</p></li>
+    </ol>
+    <button type="button" id="showme" class="showme">▶ Show me</button>
+
+    <details class="notes">
+      <summary>Where the numbers come from</summary>
+      <ul>
+        <li><b>RM:</b> Richard Mille's RM 67-01 / CRMA6 specification: 38.70 × 47.52 × 7.75 mm case, 29.10 × 31.25 × 3.60 mm movement, 28,800 vph, about 50 h (±10%), 25 jewels, CuBe balance at 7.5 mg·cm² with a 50° lift angle, platinum rotor with OneWay winding on ceramic ball bearings, function hand at 2 o'clock showing W · D · H, semi-instantaneous date in a vertical aperture at 5 o'clock, grade 5 titanium spline screws.</li>
+        <li><b>Corrected from the brief:</b> the selector reads W · D · H (there is no N). RM publishes no variable-geometry rotor or adjustable ribs for the CRMA6 (that idea belongs to other RM calibers), so the rib step and slider became OneWay against a both-ways what-if. The RM 67-01 has no seconds hand; the fourth wheel, which turns once a minute, carries a marker dot instead.</li>
+        <li><b>std.:</b> 20-tooth escape wheel and the 280° → 170° amplitude curve are typical of a Swiss lever movement; RM doesn't publish them for the CRMA6.</li>
+        <li><b>est.:</b> 1,000 rotor turns for a full wind, 6.5 barrel turns, 0.12 winding turns per step, 16 h a day on the wrist, each activity's steps and extra wrist-motion turns (golf 12,000 steps + 60 turns from swings, skiing 6,000 + 250, tennis 9,000 + 200, sailing 4,000 + 250, racing cars 3,000 + 40), and the both-ways × 1.6 factor are estimates chosen to be plausible. They set how fast things wind, not the timekeeping.</li>
+        <li><b>Drawn, not measured:</b> the layout of the wheels in the movement, the number of bezel screws, and the strap and dial details follow the watch's look, not a technical drawing.</li>
+      </ul>
+    </details>
+  </section>
+</main>
+<script type="module">
+// One small model of the RM 67-01 (caliber CRMA6). Every number the page shows
+// comes from here. Pure: no DOM, no clock, no randomness.
+//
+// source: "rm"   = Richard Mille's published RM 67-01 / CRMA6 specification
+//         "std"  = industry standard for a Swiss lever movement; CRMA6 value not published
+//         "est"  = our estimate, flagged on the page; not published anywhere
+
+const SPEC = {
+  caseW: { v: 38.7, unit: "mm", src: "rm", note: "case width (RM lists 38.70)" },
+  caseH: { v: 47.52, unit: "mm", src: "rm", note: "case length, 12 to 6" },
+  caseT: { v: 7.75, unit: "mm", src: "rm", note: "case thickness" },
+  movW: { v: 29.1, unit: "mm", src: "rm", note: "CRMA6 width" },
+  movH: { v: 31.25, unit: "mm", src: "rm", note: "CRMA6 length" },
+  movT: { v: 3.6, unit: "mm", src: "rm", note: "CRMA6 thickness" },
+  vph: { v: 28800, unit: "vph", src: "rm", note: "balance frequency" },
+  reserveH: { v: 50, unit: "h", src: "rm", note: "power reserve, RM states about 50 h ±10%" },
+  jewels: { v: 25, unit: "", src: "rm", note: "jewels" },
+  inertia: { v: 7.5, unit: "mg·cm²", src: "rm", note: "balance moment of inertia" },
+  lift: { v: 50, unit: "°", src: "rm", note: "lift angle" },
+  escTeeth: { v: 20, unit: "teeth", src: "std", note: "escape wheel teeth: the Swiss lever standard" },
+  ampFull: { v: 280, unit: "°", src: "std", note: "balance amplitude fully wound: typical, not CRMA6 data" },
+  ampLow: { v: 170, unit: "°", src: "std", note: "balance amplitude near empty: typical" },
+  barrelTurns: { v: 6.5, unit: "turns", src: "est", note: "barrel turns from empty to full" },
+  rotorTurnsFull: { v: 1000, unit: "turns", src: "est", note: "OneWay rotor turns to wind 0 → 50 h" },
+  turnsPerStep: { v: 0.12, unit: "turns", src: "est", note: "winding rotor turns per walking step" },
+  bothWays: { v: 1.6, unit: "×", src: "est", note: "what-if: a rotor that winds both ways" },
+  wornH: { v: 16, unit: "h", src: "est", note: "hours a day on the wrist" },
+};
+
+// A day of each activity: steps walked, plus winding rotor turns from wrist motion
+// that isn't walking (swings, strokes, a rolling deck). All estimates (src "est").
+const ACTIVITIES = {
+  walk: { name: "Just walking", steps: 8000, motion: 0, moves: "" },
+  golf: { label: "swings", name: "Golf", steps: 12000, motion: 60, moves: "~90 full swings", why: "walking 18 holes, and every swing whips the rotor round" },
+  skiing: { label: "poles and turns", name: "Skiing", steps: 6000, motion: 250, moves: "pole plants, turns, chairlift bumps", why: "few steps, but poles and turns rock the wrist all day" },
+  tennis: { label: "strokes", name: "Tennis", steps: 9000, motion: 200, moves: "a few hundred strokes", why: "running between shots, and each stroke snaps the wrist" },
+  sailing: { label: "boat roll", name: "Sailing", steps: 4000, motion: 250, moves: "all-day boat roll, winching", why: "hardly any walking, but the deck rolls the rotor for hours" },
+  racing: { label: "wheel vibration", name: "Racing cars", steps: 3000, motion: 40, moves: "hands steady on the wheel", why: "sitting still with hands on the wheel; buzzing vibration barely swings a rotor" },
+};
+
+const HZ = SPEC.vph.v / 3600 / 2; // 28,800 vph = 8 beats/s = 4 full swings/s
+const BEATS_PER_S = SPEC.vph.v / 3600;
+const FULL_S = SPEC.reserveH.v * 3600;
+// reserve seconds stored per radian of winding rotor travel
+const S_PER_RAD = FULL_S / (SPEC.rotorTurnsFull.v * 2 * Math.PI);
+// escape wheel: half a tooth per beat
+const ESC_DEG_PER_BEAT = 360 / SPEC.escTeeth.v / 2;
+
+function initial() {
+  return {
+    reserve: 0, // seconds of running left
+    run: 0, // seconds the movement has run (drives every wheel)
+    watch: 10 * 3600 + 8 * 60, // what the hands show, seconds since day 0 midnight
+    day0: 19, // date shown at watch = 0
+    world: 7 * 3600 + 32 * 60, // the real clock
+    rotor: 0, // rotor angle, rad, relative to the movement
+    rotorV: 0, // rad/s
+    wound: 0, // total rad that wound the spring
+    fn: "W",
+    oneWay: true,
+  };
+}
+
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+
+// Balance amplitude in degrees for a given reserve (falls as the spring lets down).
+function amplitude(reserve) {
+  if (reserve <= 0) return 0;
+  const f = clamp(reserve / FULL_S, 0, 1);
+  const a = SPEC.ampLow.v + (SPEC.ampFull.v - SPEC.ampLow.v) * Math.sqrt(f);
+  // the last few minutes: amplitude collapses to rest
+  return a * clamp(reserve / 300, 0, 1);
+}
+
+// Winding: rotor travel (rad, relative to the movement) → reserve seconds.
+// OneWay winds on positive travel only; the what-if winds on both.
+function windOf(dRotor, oneWay) {
+  if (oneWay) return Math.max(0, dRotor) * S_PER_RAD;
+  return Math.abs(dRotor) * S_PER_RAD * (SPEC.bothWays.v / 2);
+}
+
+// Advance the watch by dt real seconds.
+// input: { worn, roll, rollV, spin (kinematic rotor rad/s or null), wear (avg wind s per s), fn }
+function step(s, dt, input = {}) {
+  const n = { ...s };
+  n.world = s.world + dt;
+  n.fn = input.fn ?? s.fn;
+  n.oneWay = input.oneWay ?? s.oneWay;
+
+  // rotor: an off-centre platinum mass. Gravity pulls it toward the bottom of the
+  // tilted case; the wrist roll drags the case round under it.
+  let dRotor = 0;
+  if (input.spin != null) {
+    dRotor = input.spin * dt;
+    n.rotorV = input.spin;
+  } else if (dt > 0.05) {
+    // compressed time: the rotor's swing is averaged into input.wear instead
+    n.rotorV = 0;
+  } else {
+    const g = 60; // rad/s² at full tilt: tuned for a readable swing, not measured
+    const damp = 1.4;
+    const roll = input.roll ?? 0;
+    const acc = -g * Math.sin(s.rotor + roll) - damp * s.rotorV - (input.rollA ?? 0);
+    n.rotorV = s.rotorV + acc * dt;
+    dRotor = n.rotorV * dt;
+  }
+  n.rotor = s.rotor + dRotor;
+  let gain = (input.worn !== false ? windOf(dRotor, n.oneWay) : 0) + (input.wear ?? 0) * dt;
+  if (n.fn === "W" && input.crownWind) gain += input.crownWind * dt;
+  n.wound = s.wound + (gain > 0 ? gain / S_PER_RAD : 0);
+
+  // running: the reserve drains one second per second; the bridle slips when full
+  const running = s.reserve > 0;
+  const used = running ? Math.min(dt, s.reserve) : 0;
+  n.reserve = clamp(s.reserve + gain - used, 0, FULL_S);
+  n.run = s.run + used;
+  n.watch = s.watch + used + (input.setBy ?? 0);
+  return n;
+}
+
+// Everything the screen reads, derived from the state.
+function read(s) {
+  const amp = amplitude(s.reserve);
+  const running = amp > 0;
+  const beats = Math.floor(s.run * BEATS_PER_S);
+  const balance = running ? amp * Math.sin(2 * Math.PI * HZ * s.run) : 0;
+  const dayIndex = Math.floor(s.watch / 86400);
+  const tod = ((s.watch % 86400) + 86400) % 86400;
+  // semi-instantaneous date: jumps over the 2 minutes after midnight
+  const jump = clamp(tod / 120, 0, 1);
+  const date = ((s.day0 - 1 + dayIndex) % 31) + 1;
+  const barrelTurnsDone = (s.run / FULL_S) * SPEC.barrelTurns.v;
+  return {
+    reserveH: s.reserve / 3600,
+    reserveFrac: s.reserve / FULL_S,
+    amp,
+    running,
+    beats,
+    balance,
+    hourDeg: (tod / 43200) * 360,
+    minDeg: ((tod % 3600) / 3600) * 360,
+    secWheelDeg: (s.run / 60) * 360, // fourth wheel: one turn a minute (no seconds hand)
+    escDeg: escAngle(s.run),
+    centreDeg: (s.run / 3600) * 360,
+    thirdDeg: -(s.run / 3600) * 360 * 7.5,
+    barrelDeg: barrelTurnsDone * 360,
+    ratchetDeg: -(s.wound / (SPEC.rotorTurnsFull.v * 2 * Math.PI)) * SPEC.barrelTurns.v * 360,
+    rotorDeg: (s.rotor * 180) / Math.PI,
+    date,
+    nextDate: (date % 31) + 1,
+    dateJump: tod < 120 && dayIndex > 0 ? jump : 1,
+    hh: Math.floor(tod / 3600),
+    mm: Math.floor((tod % 3600) / 60),
+    worldTod: ((s.world % 86400) + 86400) % 86400,
+  };
+}
+
+// The escape wheel moves only when a beat lets a tooth go: a fast eased jump
+// (30 ms), then still. Continuous in time, never a snap.
+function escAngle(run) {
+  const b = run * BEATS_PER_S;
+  const k = Math.floor(b);
+  const f = clamp((b - k) / 0.24, 0, 1);
+  const e = f * f * (3 - 2 * f);
+  return (k + e) * ESC_DEG_PER_BEAT;
+}
+
+// A day of wear, averaged: steps → rotor turns → hours of reserve.
+function dayModel({ steps, motion = 0, oneWay = true, startH = SPEC.reserveH.v, days = 7 }) {
+  const factor = oneWay ? 1 : SPEC.bothWays.v;
+  const stepTurns = steps * SPEC.turnsPerStep.v * factor;
+  const motionTurns = motion * factor;
+  const turns = stepTurns + motionTurns;
+  const gainH = (turns / SPEC.rotorTurnsFull.v) * SPEC.reserveH.v;
+  const worn = SPEC.wornH.v;
+  const trace = [];
+  let r = startH;
+  let stoppedAt = null;
+  // run long enough for a slow drain to show; the chart keeps the first `days`
+  for (let h = 0; h < Math.max(days, 60) * 24; h++) {
+    const hour = h % 24; // 0..15 on the wrist, 16..23 on the nightstand
+    const add = hour < worn ? gainH / worn : 0;
+    if (r <= 0 && add === 0 && stoppedAt == null) stoppedAt = h;
+    r = clamp(r + add - (r > 0 || add > 0 ? 1 : 0), 0, SPEC.reserveH.v);
+    if (r === 0 && stoppedAt == null) stoppedAt = h + 1;
+    trace.push(r);
+  }
+  // steady state: reserve on taking it off, once days repeat
+  const steady = trace[trace.length - 24 + worn - 1];
+  trace.length = days * 24;
+  return {
+    steps,
+    stepTurns,
+    motionTurns,
+    // the same winding expressed as plain walking
+    stepEquiv: Math.round(steps + motion / SPEC.turnsPerStep.v),
+    turns,
+    gainH,
+    useH: 24,
+    netH: gainH - 24,
+    // speed up a real winding second into a readable on-screen second
+    windPerS: gainH / (worn * 3600), // reserve hours per worn second
+    trace,
+    stoppedAt,
+    steady,
+    breakEven: Math.ceil((24 / SPEC.reserveH.v) * SPEC.rotorTurnsFull.v / (SPEC.turnsPerStep.v * (oneWay ? 1 : SPEC.bothWays.v))),
+  };
+}
+
+// Real-time speed factor for a move: (real seconds represented) / (screen seconds).
+function speedOf(realS, screenS) {
+  return realS / screenS;
+}
+
+function speedLabel(k) {
+  if (Math.abs(k - 1) < 0.02) return "×1";
+  if (k < 1) return "×1/" + Math.round(1 / k);
+  return "×" + Math.round(k).toLocaleString("en-US");
+}
+
+
+// Isometric camera and the few solids this figure needs. World units are mm.
+// x and y on the floor, z up. The viewer sits at (+1, +1, +1).
+
+const C30 = Math.cos(Math.PI / 6);
+
+function cam(ox, oy, k) {
+  return { ox, oy, k };
+}
+
+function pr(P, x, y, z) {
+  return [P.ox + (y - x) * C30 * P.k, P.oy + ((x + y) * 0.5 - z) * P.k];
+}
+
+// A plane at height z whose local X runs along world +y and local Y along world +x.
+// Watch faces are drawn flat in this local frame (X toward 3 o'clock, Y toward 6).
+function planeM(P, cx, cy, z) {
+  const k = P.k;
+  const e = P.ox + (cy - cx) * C30 * k;
+  const f = P.oy + ((cx + cy) * 0.5 - z) * k;
+  return `matrix(${r3(C30 * k)} ${r3(0.5 * k)} ${r3(-C30 * k)} ${r3(0.5 * k)} ${r3(e)} ${r3(f)})`;
+}
+
+function onPlane(P, cx, cy, z, X, Y) {
+  return pr(P, cx + Y, cy + X, z);
+}
+
+const r1 = (v) => Math.round(v * 10) / 10;
+const r3 = (v) => Math.round(v * 1000) / 1000;
+
+function pathOf(pts, close = true) {
+  return "M" + pts.map((p) => r1(p[0]) + " " + r1(p[1])).join("L") + (close ? "Z" : "");
+}
+
+function hull(points) {
+  const p = points.slice().sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+  const cr = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+  const lo = [];
+  const up = [];
+  for (const q of p) {
+    while (lo.length >= 2 && cr(lo[lo.length - 2], lo[lo.length - 1], q) <= 0) lo.pop();
+    lo.push(q);
+  }
+  for (let i = p.length - 1; i >= 0; i--) {
+    const q = p[i];
+    while (up.length >= 2 && cr(up[up.length - 2], up[up.length - 1], q) <= 0) up.pop();
+    up.push(q);
+  }
+  return lo.slice(0, -1).concat(up.slice(0, -1));
+}
+
+// Tonneau: a superellipse pinched toward 12 and 6, so the sides bow out like a barrel.
+// Local X half-width a (at the middle), Y half-length b.
+const PINCH = 0.2;
+const barrel = (Y, b) => 1 - PINCH * (Y / b) ** 2;
+
+function tonneau(a, b, n = 4.2, N = 96) {
+  const out = [];
+  for (let i = 0; i < N; i++) {
+    const t = (i / N) * Math.PI * 2;
+    const c = Math.cos(t);
+    const s = Math.sin(t);
+    const Y = b * Math.sign(s) * Math.abs(s) ** (2 / n);
+    out.push([a * barrel(Y, b) * Math.sign(c) * Math.abs(c) ** (2 / n), Y]);
+  }
+  return out;
+}
+
+// Distance from centre to the tonneau edge along polar angle th (local frame).
+function tonneauR(a, b, th, n = 4.2) {
+  const inside = (r) => {
+    const X = r * Math.cos(th);
+    const Y = r * Math.sin(th);
+    return Math.abs(X / (a * barrel(Y, b))) ** n + Math.abs(Y / b) ** n <= 1;
+  };
+  let lo = 0;
+  let hi = Math.max(a, b);
+  for (let i = 0; i < 30; i++) {
+    const m = (lo + hi) / 2;
+    if (inside(m)) lo = m;
+    else hi = m;
+  }
+  return lo;
+}
+
+function roundRect(x0, y0, x1, y1, r, N = 8) {
+  const out = [];
+  const corner = (cx, cy, a0) => {
+    for (let i = 0; i <= N; i++) {
+      const a = a0 + (i / N) * (Math.PI / 2);
+      out.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]);
+    }
+  };
+  corner(x1 - r, y1 - r, 0);
+  corner(x0 + r, y1 - r, Math.PI / 2);
+  corner(x0 + r, y0 + r, Math.PI);
+  corner(x1 - r, y0 + r, (3 * Math.PI) / 2);
+  return out;
+}
+
+function circlePts(cx, cy, r, N = 48) {
+  const out = [];
+  for (let i = 0; i < N; i++) {
+    const a = (i / N) * Math.PI * 2;
+    out.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]);
+  }
+  return out;
+}
+
+const fillS = (c) => `style="fill:${c};stroke:${c};stroke-width:.5"`;
+const fillOnly = (c) => `style="fill:${c}"`;
+
+// A vertical prism on a world plan. tones = [top, faces toward +x, faces toward +y].
+// Sides are flat colour runs; one ink outline goes round the silhouette and the top.
+function prism(P, plan, z0, z1, tones, o = {}) {
+  const n = plan.length;
+  let area = 0;
+  for (let i = 0; i < n; i++) {
+    const [x0, y0] = plan[i];
+    const [x1, y1] = plan[(i + 1) % n];
+    area += x0 * y1 - x1 * y0;
+  }
+  const ccw = area > 0;
+  const B = plan.map(([x, y]) => pr(P, x, y, z0));
+  const T = plan.map(([x, y]) => pr(P, x, y, z1));
+  const edges = [];
+  for (let i = 0; i < n; i++) {
+    const j = (i + 1) % n;
+    const dx = plan[j][0] - plan[i][0];
+    const dy = plan[j][1] - plan[i][1];
+    const nx = ccw ? dy : -dy;
+    const ny = ccw ? -dx : dx;
+    const vis = nx + ny > 1e-9;
+    edges.push({ i, j, vis, tone: vis ? (nx > ny ? 1 : 2) : 0 });
+  }
+  let start = edges.findIndex((e) => !e.vis);
+  if (start < 0) start = 0;
+  const order = edges.slice(start).concat(edges.slice(0, start));
+  let out = "";
+  let run = null;
+  const flush = () => {
+    if (!run) return;
+    const pts = [];
+    for (const e of run.list) pts.push(B[e.i]);
+    pts.push(B[run.list[run.list.length - 1].j]);
+    for (let q = run.list.length - 1; q >= 0; q--) pts.push(T[run.list[q].j]);
+    pts.push(T[run.list[0].i]);
+    out += `<path d="${pathOf(pts)}" ${fillS(tones[run.tone])}/>`;
+    run = null;
+  };
+  for (const e of order) {
+    if (!e.vis) {
+      flush();
+      continue;
+    }
+    if (run && run.tone === e.tone) run.list.push(e);
+    else {
+      flush();
+      run = { tone: e.tone, list: [e] };
+    }
+  }
+  flush();
+  if (z1 - z0 < 1e-6) out = "";
+  out += `<path d="${pathOf(T)}" ${fillOnly(tones[0])}${o.topId ? ` id="${o.topId}"` : ""}/>`;
+  if (o.ink !== false) {
+    out += `<path class="k" d="${pathOf(hull(B.concat(T)))}"/>`;
+    out += `<path class="k" d="${pathOf(T)}"/>`;
+  }
+  return out;
+}
+
+// A tube along world y with an elliptical (or squarish, n > 2) cross-section.
+// stations: [{ y, rx, rz, zc, cx? }]. tones = [top, side, underside].
+function tubeY(P, st, tones, o = {}) {
+  const n = o.n || 2;
+  const sec = (s, a) => {
+    const c = Math.cos(a);
+    const q = Math.sin(a);
+    return [(s.cx || 0) + s.rx * Math.sign(c) * Math.abs(c) ** (2 / n), s.zc + s.rz * Math.sign(q) * Math.abs(q) ** (2 / n)];
+  };
+  const pt = (s, a) => {
+    const [x, z] = sec(s, a);
+    return pr(P, x, s.y, z);
+  };
+  const all = [];
+  for (const s of st) for (let i = 0; i < 72; i++) all.push(pt(s, (i / 72) * Math.PI * 2));
+  const H = hull(all);
+  const band = (a0, a1) => {
+    const pts = [];
+    st.forEach((s) => pts.push(pt(s, a0)));
+    const L = st[st.length - 1];
+    for (let i = 1; i < 16; i++) pts.push(pt(L, a0 + ((a1 - a0) * i) / 16));
+    for (let q = st.length - 1; q >= 0; q--) pts.push(pt(st[q], a1));
+    const F = st[0];
+    for (let i = 1; i < 16; i++) pts.push(pt(F, a1 + ((a0 - a1) * i) / 16));
+    return pathOf(pts);
+  };
+  const D = Math.PI / 180;
+  let out = `<path d="${pathOf(H)}" ${fillS(tones[1])}/>`;
+  out += `<path d="${band(-40 * D, 12 * D)}" ${fillS(tones[2])}/>`;
+  out += `<path d="${band(58 * D, 150 * D)}" ${fillS(tones[0])}/>`;
+  if (o.cap) {
+    const L = st[st.length - 1];
+    const cap = [];
+    for (let i = 0; i < 72; i++) cap.push(pt(L, (i / 72) * Math.PI * 2));
+    out += `<path d="${pathOf(cap)}" ${fillS(o.cap)}/><path class="k" d="${pathOf(cap)}"/>`;
+  }
+  out += `<path class="k" d="${pathOf(H)}"/>`;
+  return { svg: out, hull: H, pt, sec };
+}
+
+// A thin strip (a strap) along world y following a cross-section profile [[x, z], ...].
+// Only the outward face that looks at the viewer is drawn. centre: [x, z] the profile wraps.
+function stripY(P, prof, y0, y1, tones, centre) {
+  const seg = [];
+  for (let i = 0; i < prof.length - 1; i++) {
+    const [xa, za] = prof[i];
+    const [xb, zb] = prof[i + 1];
+    const mx = (xa + xb) / 2 - centre[0];
+    const mz = (za + zb) / 2 - centre[1];
+    const ang = Math.atan2(mz, mx);
+    // outward normal of the segment
+    let nx = zb - za;
+    let nz = -(xb - xa);
+    if (nx * mx + nz * mz < 0) {
+      nx = -nx;
+      nz = -nz;
+    }
+    const vis = nx + nz > 0;
+    const deg = (ang * 180) / Math.PI;
+    const tone = deg > 58 && deg < 150 ? 0 : deg < 12 && deg > -140 ? 2 : 1;
+    seg.push({ i, vis, tone });
+  }
+  let out = "";
+  let ink = "";
+  let run = null;
+  let vrun = null;
+  const q = (i, y) => pr(P, prof[i][0], y, prof[i][1]);
+  const flush = () => {
+    if (!run) return;
+    const a = run[0];
+    const b = run[run.length - 1] + 1;
+    const pts = [];
+    for (let i = a; i <= b; i++) pts.push(q(i, y0));
+    for (let i = b; i >= a; i--) pts.push(q(i, y1));
+    out += `<path d="${pathOf(pts)}" ${fillS(tones[run.tone])}/>`;
+    run = null;
+  };
+  const vflush = () => {
+    if (!vrun) return;
+    const pts = [];
+    for (let i = vrun[0]; i <= vrun[1] + 1; i++) pts.push(q(i, y0));
+    for (let i = vrun[1] + 1; i >= vrun[0]; i--) pts.push(q(i, y1));
+    ink += `<path class="k" d="${pathOf(pts)}"/>`;
+    vrun = null;
+  };
+  for (const s of seg) {
+    if (!s.vis) {
+      flush();
+      vflush();
+      continue;
+    }
+    if (run && run.tone === s.tone) run.push(s.i);
+    else {
+      flush();
+      run = [s.i];
+      run.tone = s.tone;
+    }
+    if (vrun) vrun[1] = s.i;
+    else vrun = [s.i, s.i];
+  }
+  flush();
+  vflush();
+  return { svg: out + ink, seg, q };
+}
+
+// Ellipse of a horizontal circle (radius r at world centre) as a path.
+function flatCircle(P, x, y, z, r, N = 40) {
+  const pts = [];
+  for (let i = 0; i < N; i++) {
+    const a = (i / N) * Math.PI * 2;
+    pts.push(pr(P, x + r * Math.cos(a), y + r * Math.sin(a), z));
+  }
+  return pathOf(pts);
+}
+
+// A vertical cylinder: a prism on a circle plan.
+function post(P, x, y, r, z0, z1, tones) {
+  return prism(P, circlePts(x, y, r, 36), z0, z1, tones);
+}
+
+
+// The drawing: a forearm with the RM 67-01 on it, and the same watch turned over
+// beside it with the rotor lifted off its bearing. Static paths are built once;
+// the parts that move carry ids and get a transform each frame.
+
+const W = 1000;
+const H = 720;
+
+// main scene camera and the wrist
+const PM = cam(372, 396, 3.5);
+const CASE = { a: 19.35, b: 23.76, n: 4.2 }; // half of 38.7 × 47.52
+const Z0 = 36; // caseback on the skin
+const ZB = [Z0, Z0 + 2.2, Z0 + 6.2, Z0 + 7.75]; // back, middle, bezel, top (7.75 total)
+const ZD = ZB[3] - 1.35; // dial plane, under the crystal
+const OPEN = { a: 16.15, b: 18.3 }; // bezel is thicker at 12 and 6, where its screws sit
+
+// inset: the watch turned over, through the caseback
+const PI_ = cam(800, 206, 5.0);
+const ZM = -1.4; // movement plane, under the back crystal
+const ZR = 12.5; // rotor lifted off its bearing
+const MOV = { w: 29.1, h: 31.25 };
+
+const T = {
+  skin: ["#f6d7bb", "#e8b892", "#cf9774"],
+  sleeve: ["#9cc0e4", "#7aa2cf", "#5b82b0"],
+  cushion: ["#f3e3c3", "#e2cba2", "#c9ad7f"],
+  ti: ["var(--cs0)", "var(--cs1)", "var(--cs2)"],
+  strap: ["var(--st0)", "var(--st1)", "var(--st2)"],
+  plate: ["#7a808a", "#5d636d", "#454a53"],
+  gold: ["#f6d98a", "#e2b955", "#bf9334"],
+  plat: ["#f1e8d8", "#dccdb2", "#bba98a"],
+  steel: ["#c9d4e3", "#9fb0c7", "#7b8ca5"],
+  jewel: "#d6455d",
+};
+
+const TI = ["#d9dde2", "#b7bdc5", "#8f97a1"];
+const local = (d, cls = "", style = "") => `<path d="${d}"${cls ? ` class="${cls}"` : ""}${style ? ` style="${style}"` : ""}/>`;
+const lpath = (pts, close = true) => pathOf(pts, close);
+const circ = (x, y, r, style, cls = "") => `<circle cx="${r1(x)}" cy="${r1(y)}" r="${r3(r)}"${cls ? ` class="${cls}"` : ""} style="${style}"/>`;
+
+// polar helpers on the face: clock angle φ (0 at 12, clockwise) → local X, Y
+const clockDir = (phi) => [Math.sin(phi), -Math.cos(phi)];
+const thOf = (phi) => Math.atan2(-Math.cos(phi), Math.sin(phi));
+
+// ---------- the wrist ----------
+const ARM = [
+  { y: -64, rx: 33, rz: 24, zc: 26 },
+  { y: -40, rx: 31.5, rz: 21.5, zc: 23 },
+  { y: -14, rx: 29.5, rz: 18.5, zc: 18.5 },
+  { y: 12, rx: 28.5, rz: 17, zc: 18 },
+  { y: 34, rx: 28, rz: 15.5, zc: 16.5 },
+  { y: 50, rx: 28, rz: 13, zc: 16 },
+];
+const ARM_N = 2.6;
+const SLEEVE = [
+  { y: -175, rx: 41, rz: 34, zc: 34 },
+  { y: -62, rx: 40, rz: 33, zc: 33 },
+];
+const WRIST = { rx: 29, rz: 18, zc: 18 }; // cross-section the strap and cushion wrap
+
+function shadowOf(P, plan, dx, dy) {
+  const pts = hull(plan.map(([x, y]) => pr(P, x + dx, y + dy, 0)));
+  return `<path d="${pathOf(pts)}" class="shade"/>`;
+}
+
+function armSvg() {
+  const P = PM;
+  let out = "";
+  // hard warm shadow, just behind the arm (toward −x, away from the viewer)
+  const foot = [];
+  for (const s of [...SLEEVE, ...ARM]) foot.push([s.rx * 0.8, s.y], [-s.rx * 0.8, s.y]);
+  foot.push([28, 94], [-28, 94], [35, 78], [35, 50]);
+  out += shadowOf(P, foot, -30, -4);
+  // sleeve: knitted cuff, a darker opening, ribs that run from seam to rim
+  const sl = tubeY(P, SLEEVE, T.sleeve, { cap: "#41597d" });
+  out += sl.svg;
+  const capIn = [];
+  for (let i = 0; i < 72; i++) {
+    const a = (i / 72) * Math.PI * 2;
+    capIn.push(pr(P, 33.5 * Math.cos(a), -62, 31 + 26.5 * Math.sin(a)));
+  }
+  out += `<path d="${pathOf(capIn)}" style="fill:#2f4362"/>`;
+  // cuff seam ring and ribs on the visible face
+  const seam = [];
+  for (let a = -38; a <= 150; a += 4) seam.push(sl.pt({ y: -86, rx: 40.6, rz: 33.6, zc: 33 }, (a * Math.PI) / 180));
+  out += `<path class="k thin" d="${pathOf(seam, false)}"/>`;
+  for (let a = -30; a <= 140; a += 12) {
+    const r = (a * Math.PI) / 180;
+    const p0 = sl.pt({ y: -86, rx: 40.6, rz: 33.6, zc: 33 }, r);
+    const p1 = sl.pt({ y: -62, rx: 40, rz: 33, zc: 33 }, r);
+    out += `<path class="k thin" d="${pathOf([p0, p1], false)}"/>`;
+  }
+  // the forearm
+  const arm = tubeY(P, ARM, T.skin, { n: ARM_N });
+  out += arm.svg;
+  // the hand, palm down; thumb on the near side
+  const hand = roundRect(-28, 46, 28, 94, 15, 10).map(([x, y]) => [x, y]);
+  out += prism(P, hand, 3, 29, T.skin);
+  // finger gaps: along the top to the front edge, then down the front face
+  for (const x of [-14, 0, 14]) {
+    const yEnd = 94 - (Math.abs(x) > 13 ? 15 - Math.sqrt(15 * 15 - (Math.abs(x) - 13) ** 2) : 0);
+    out += `<path class="k" d="${pathOf([pr(P, x, 76, 29), pr(P, x, yEnd, 29), pr(P, x, yEnd, 3)], false)}"/>`;
+  }
+  // knuckles: short arcs on the top that start and end on a finger gap
+  for (const [x0, x1] of [[-28, -14], [-14, 0], [0, 14], [14, 28]]) {
+    const pts = [];
+    const a0 = x0;
+    const a1 = x1;
+    for (let i = 0; i <= 8; i++) {
+      const x = a0 + ((a1 - a0) * i) / 8;
+      pts.push(pr(P, x, 72 - 2.2 * Math.sin((Math.PI * i) / 8), 29));
+    }
+    if (x0 > -28 && x1 < 28) out += `<path class="k thin" d="${pathOf(pts, false)}"/>`;
+  }
+  const thumb = roundRect(22, 50, 35, 78, 6.4, 8);
+  out += prism(P, thumb, 5, 19, T.skin);
+  out += prism(P, roundRect(27, 70, 33.4, 76.4, 2.6, 4), 19, 19.6, ["#fbe7d6", T.skin[1], T.skin[2]]);
+  return out;
+}
+
+function cushionSvg() {
+  const st = [-27, 27].map((y) => ({ y, rx: WRIST.rx, rz: WRIST.rz, zc: WRIST.zc }));
+  let out = shadowOf(PM, [[30, -27], [-30, -27], [30, 27], [-30, 27]], -8, -3);
+  const c = tubeY(PM, st, T.cushion, { n: ARM_N, cap: T.cushion[2] });
+  out += c.svg;
+  // a stitched seam round the near end
+  const s = [];
+  for (let a = -30; a <= 140; a += 5) s.push(c.pt({ y: 24, rx: WRIST.rx + 0.4, rz: WRIST.rz + 0.4, zc: WRIST.zc }, (a * Math.PI) / 180));
+  out += `<path class="k thin dash" d="${pathOf(s, false)}"/>`;
+  return out;
+}
+
+// the strap: two rubber pieces wrapping the wrist from under the 12 and 6 ends
+function strapSvg() {
+  const P = PM;
+  const cx = 0;
+  const cz = WRIST.zc;
+  const R = (a) => {
+    const c = Math.cos(a);
+    const q = Math.sin(a);
+    return [cx + (WRIST.rx + 1.6) * Math.sign(c) * Math.abs(c) ** (2 / ARM_N), cz + (WRIST.rz + 1.6) * Math.sign(q) * Math.abs(q) ** (2 / ARM_N)];
+  };
+  const D = Math.PI / 180;
+  let out = "";
+  const pieces = [
+    [[21, Z0 + 0.6], ...Array.from({ length: 28 }, (_, i) => R((52 - i * 4) * D))],
+    [[-21, Z0 + 0.6], ...Array.from({ length: 22 }, (_, i) => R((128 + i * 4) * D))],
+  ];
+  for (const prof of pieces) {
+    const s = stripY(P, prof, -12, 12, T.strap, [cx, cz]);
+    out += s.svg;
+    // moulded grooves across the strap, edge to edge
+    for (let i = 3; i < prof.length - 1; i += 4) {
+      if (!s.seg[i] || !s.seg[i].vis) continue;
+      out += `<path class="k thin" d="${pathOf([s.q(i, -12), s.q(i, 12)], false)}"/>`;
+    }
+  }
+  return out;
+}
+
+// ---------- the watch head on the wrist ----------
+function caseSvg(P, z0, flip) {
+  const pl = (a, b) => tonneau(a, b, CASE.n).map(([X, Y]) => [Y, X]);
+  let out = "";
+  out += prism(P, pl(CASE.a - 0.6, CASE.b - 0.6), z0, z0 + 2.2, T.ti);
+  out += prism(P, pl(CASE.a, CASE.b), z0 + 2.2, z0 + 6.2, T.ti, { topId: flip ? "" : "caseMid" });
+  out += prism(P, pl(CASE.a - 0.35, CASE.b - 0.35), z0 + 6.2, z0 + 7.75, T.ti, { topId: flip ? "insetTop" : "caseTop" });
+  return out;
+}
+
+// Spline screws as on the RM 67-01: two through each end of the bezel, two down each side.
+// A, B: the face's outer half-width and half-length.
+function screwsSvg(A = 19, B = 23.4, r = 0.95) {
+  const sideX = A * (1 - PINCH * (8 / B) ** 2) - 1.7;
+  const at = [];
+  for (const sy of [-1, 1]) for (const sx of [-1, 1]) at.push([sx * A * 0.55, sy * (B - 2.6)], [sx * sideX, sy * 8]);
+  let out = "";
+  at.forEach(([X, Y], i) => {
+    out += circ(X, Y, r, "fill:#3a3f4b", "k");
+    // spline head: six short splines from the rim toward the centre
+    let d = "";
+    for (let k = 0; k < 6; k++) {
+      const a2 = (k / 6) * Math.PI * 2 + i;
+      d += `M${r3(X + r * Math.cos(a2))} ${r3(Y + r * Math.sin(a2))}L${r3(X + 0.35 * r * Math.cos(a2))} ${r3(Y + 0.35 * r * Math.sin(a2))}`;
+    }
+    out += `<path class="spl" d="${d}"/>`;
+  });
+  return out;
+}
+
+function ring(aO, bO, aI, bI) {
+  return lpath(tonneau(aO, bO, CASE.n)) + lpath(tonneau(aI, bI, CASE.n).reverse());
+}
+
+function dialSvg() {
+  const a = OPEN.a;
+  const b = OPEN.b;
+  let out = "";
+  out += local(lpath(tonneau(a, b, CASE.n)), "", `fill:${T.plate[1]}`);
+  // the movement through the open-worked dial, seen from the front (mirror of the back):
+  // the barrel's ratchet winding, the seconds wheel, the escape wheel and the balance, all live
+  out += `<g id="fBarrelG">`;
+  out += circ(-4.6, -6.2, 4.0, `fill:${T.gold[2]}`, "k");
+  out += wheel("fRatchet", -4.6, -6.2, 3.4, T.steel, 3, 28);
+  out += `</g>`;
+  out += `<g id="fTrainG">`;
+  out += wheel("fFourth", -5.4, 4.6, 2.6, T.gold, 4, 30, circ(0, -1.45, 0.38, "fill:var(--ui1)", "k"));
+  out += wheel("fEsc", -1.9, 7.0, 1.6, T.steel, 0, 20);
+  out += `</g>`;
+  out += `<g id="fBalanceG" transform="translate(2.6 4.6)"><g id="fBalance">`;
+  out += local(lpath(circlePts(0, 0, 2.7, 48)) + lpath(circlePts(0, 0, 2.25, 48).reverse()), "k", `fill:${T.gold[1]};fill-rule:evenodd`);
+  for (let k = 0; k < 4; k++) {
+    const t = (k / 4) * Math.PI * 2 + Math.PI / 4;
+    out += local(`M${r3(0.4 * Math.cos(t))} ${r3(0.4 * Math.sin(t))}L${r3(2.3 * Math.cos(t))} ${r3(2.3 * Math.sin(t))}`, "k thin");
+  }
+  out += circ(0, 0, 0.55, `fill:${T.gold[2]}`, "k");
+  out += `</g><g transform="scale(0.62)"><path id="fHair" class="k hair" d=""/></g>`;
+  out += circ(0, 0, 0.5, `fill:${T.jewel}`, "k");
+  out += `</g>`;
+  // black flange with a minute track, ticks hanging from its outer edge
+  const ci = { a: a - 2.2, b: b - 2.2 };
+  out += local(ring(a, b, ci.a, ci.b), "k", "fill:#262b36;fill-rule:evenodd");
+  let ticks = "";
+  let majors = "";
+  for (let m = 0; m < 60; m++) {
+    const phi = (m / 60) * Math.PI * 2;
+    const th = thOf(phi);
+    const ro = tonneauR(a, b, th, CASE.n);
+    const [dx, dy] = clockDir(phi);
+    const len = m % 5 === 0 ? 1.6 : 0.8;
+    const seg = `M${r3(dx * ro)} ${r3(dy * ro)}L${r3(dx * (ro - len))} ${r3(dy * (ro - len))}`;
+    if (m % 5 === 0) majors += seg;
+    else ticks += seg;
+  }
+  out += `<path class="tickW hair" d="${ticks}"/><path class="tickW" d="${majors}"/>`;
+  // numeral ring: a black rail carrying big white Arabic numerals
+  const ra = { a: ci.a - 0.5, b: ci.b - 0.5 };
+  const rw = 5.2;
+  out += local(ring(ra.a, ra.b, ra.a - rw, ra.b - rw), "k", "fill:#2f3542;fill-rule:evenodd");
+  for (let h = 1; h <= 12; h++) {
+    if (h === 5) continue; // the date window takes the 5
+    const phi = (h / 12) * Math.PI * 2;
+    const th = thOf(phi);
+    const r = tonneauR(ra.a - rw / 2, ra.b - rw / 2, th, CASE.n);
+    const [dx, dy] = clockDir(phi);
+    out += `<text x="${r3(dx * r)}" y="${r3(dy * r + 1.55)}" class="num">${h}</text>`;
+  }
+  // function indicator just inside the 1 and 2: W · D · H on an arc, with a pointer
+  const fd = clockDir((1.5 / 12) * Math.PI * 2);
+  const fc = [fd[0] * 4.2, fd[1] * 4.2];
+  const axis = Math.atan2(fd[1], fd[0]);
+  out += `<g id="fnDial">`;
+  out += circ(fc[0], fc[1], 3.4, "fill:#2f3542", "k");
+  FN_ANG.forEach((da, i) => {
+    const t = axis + da;
+    out += `<text x="${r3(fc[0] + 2.3 * Math.cos(t))}" y="${r3(fc[1] + 2.3 * Math.sin(t) + 0.66)}" class="fnl">${"WDH"[i]}</text>`;
+  });
+  out += `<g id="fnHand" transform="translate(${r3(fc[0])} ${r3(fc[1])})"><g id="fnHandR">`;
+  out += local("M-0.3 -0.55L1.55 0L-0.3 0.55Z", "k", "fill:var(--ac1)");
+  out += `</g></g>`;
+  out += circ(fc[0], fc[1], 0.4, "fill:var(--ac2)", "k");
+  out += `</g>`;
+  // date at 5 o'clock, on the numeral rail: a vertical aperture, tens over units
+  const dphi = (5 / 12) * Math.PI * 2;
+  const dd = clockDir(dphi);
+  const dR = tonneauR(ra.a - rw / 2, ra.b - rw / 2, thOf(dphi), CASE.n);
+  const dc = [dd[0] * dR, dd[1] * dR];
+  out += `<g transform="translate(${r3(dc[0])} ${r3(dc[1])})">`;
+  out += `<clipPath id="dateClip"><rect x="-1.9" y="-3.7" width="3.8" height="7.4" rx="0.6"/></clipPath>`;
+  out += `<rect x="-1.9" y="-3.7" width="3.8" height="7.4" rx="0.6" style="fill:#151922"/>`;
+  out += `<g clip-path="url(#dateClip)"><g id="dateStrip"></g></g>`;
+  out += `<rect x="-1.9" y="-3.7" width="3.8" height="7.4" rx="0.6" class="dateFrame"/>`;
+  out += `</g>`;
+  // hands: skeleton hour and minute with lume, then a cap
+  out += `<g id="hourH">${local("M-1.2 1.8L-1.0 -6.5L0 -8.6L1.0 -6.5L1.2 1.8Z", "k", "fill:var(--ac1)")}${local("M-0.5 -1.6L-0.4 -6L0 -7.4L0.4 -6L0.5 -1.6Z", "", "fill:var(--ac0)")}</g>`;
+  out += `<g id="minH">${local("M-0.9 2.2L-0.7 -12.2L0 -14.6L0.7 -12.2L0.9 2.2Z", "k", "fill:var(--ac1)")}${local("M-0.35 -2L-0.3 -11.5L0 -13L0.3 -11.5L0.35 -2Z", "", "fill:var(--ac0)")}</g>`;
+  out += circ(0, 0, 1.5, `fill:${TI[0]}`, "k");
+  out += circ(0, 0, 0.5, `fill:${T.jewel}`, "");
+  return out;
+}
+
+const FN_ANG = [-0.75, 0, 0.75];
+
+function crownSvg(P) {
+  // along +y at 3 o'clock; knurled, with a titanium tube into the case
+  const zc = Z0 + 4.2;
+  const tube = tubeY(P, [{ y: CASE.a - 1, rx: 1.4, rz: 1.4, zc }, { y: CASE.a + 1.8, rx: 1.4, rz: 1.4, zc }], T.ti, { cap: T.ti[1] });
+  const st = [{ y: CASE.a + 1.6, rx: 3.1, rz: 3.1, zc }, { y: CASE.a + 6.4, rx: 3.1, rz: 3.1, zc }];
+  const cr = tubeY(P, st, T.ti, { cap: "var(--cs0)" });
+  let knurl = "";
+  for (let a = -40; a <= 150; a += 15) {
+    const r = (a * Math.PI) / 180;
+    knurl += pathOf([cr.pt(st[0], r), cr.pt(st[1], r)], false);
+  }
+  const face = pr(P, 0, CASE.a + 6.4, zc);
+  return `<g id="crownTube">${tube.svg}</g><g id="crown">${cr.svg}<path class="k hair" d="${knurl}"/>` + `<path class="k thin" d="${flatCircleY(P, 0, CASE.a + 6.4, zc, 1.6)}"/>` + circ(face[0], face[1], 0.9, "fill:var(--cs0)", "k") + `</g>`;
+}
+
+function flatCircleY(P, x, y, zc, r) {
+  const pts = [];
+  for (let i = 0; i < 32; i++) {
+    const a = (i / 32) * Math.PI * 2;
+    pts.push(pr(P, x + r * Math.cos(a), y, zc + r * Math.sin(a)));
+  }
+  return pathOf(pts);
+}
+
+function watchSvg() {
+  const P = PM;
+  let out = "";
+  out += caseSvg(P, Z0, false);
+  out += `<path id="tptTop" d="" class="tpt"/>`;
+  const top = ZB[3];
+  // bezel inner wall, then the dial under the crystal
+  const open = tonneau(OPEN.a, OPEN.b, CASE.n).map(([X, Y]) => pr(P, Y, X, top));
+  out += `<path d="${pathOf(open)}" style="fill:var(--cs2)"/>`;
+  out += `<clipPath id="openClip"><path d="${pathOf(open)}"/></clipPath>`;
+  out += `<g clip-path="url(#openClip)"><g transform="${planeM(P, 0, 0, ZD)}" class="plane" id="dialG">${dialSvg()}</g>`;
+  // crystal glints: two strokes from edge to edge, cut by the opening
+  const g1 = [onPlane(P, 0, 0, top, -20, 2), onPlane(P, 0, 0, top, 4, -24)];
+  const g2 = [onPlane(P, 0, 0, top, -18, 9), onPlane(P, 0, 0, top, 8, -18)];
+  out += `<path class="glint" d="${pathOf(g1, false)}"/><path class="glint thinG" d="${pathOf(g2, false)}"/></g>`;
+  out += `<path class="k" d="${pathOf(open)}"/>`;
+  out += `<g transform="${planeM(P, 0, 0, top)}" class="plane">${screwsSvg(CASE.a - 0.35, CASE.b - 0.35)}</g>`;
+  out += crownSvg(P);
+  return out;
+}
+
+// ---------- the movement seen through the caseback ----------
+const MV = {
+  barrel: [7.5, -8, 6.3],
+  ratchet: [7.5, -8, 5.1],
+  centre: [0, 0, 5],
+  third: [-8.2, 3, 4],
+  fourth: [-4.2, 9.6, 3.4],
+  esc: [1.6, 11.6, 2.6],
+  pallet: [5.2, 10.6],
+  balance: [9.2, 7.4, 4.6],
+  oneway: [-4.6, -6.2, 2.5],
+  reduce: [0.6, -12.3, 2.9],
+};
+
+function wheel(id, x, y, r, tones, spokes = 4, teeth = 0, extra = "") {
+  let d = "";
+  if (teeth) {
+    const pts = [];
+    for (let i = 0; i < teeth; i++) {
+      const a = (i / teeth) * Math.PI * 2;
+      const da = (Math.PI * 2) / teeth;
+      pts.push([r * 0.86 * Math.cos(a), r * 0.86 * Math.sin(a)]);
+      pts.push([r * Math.cos(a + da * 0.25), r * Math.sin(a + da * 0.25)]);
+      pts.push([r * Math.cos(a + da * 0.5), r * Math.sin(a + da * 0.5)]);
+      pts.push([r * 0.86 * Math.cos(a + da * 0.75), r * 0.86 * Math.sin(a + da * 0.75)]);
+    }
+    d = lpath(pts);
+  } else d = lpath(circlePts(0, 0, r, 48));
+  let out = `<g transform="translate(${r1(x)} ${r1(y)})"><g id="${id}">`;
+  out += local(d, "k", `fill:${tones[1]}`);
+  // open-worked: windows between the spokes, each a closed shape
+  if (spokes) {
+    const ri = r * 0.78;
+    const rh = r * 0.3;
+    const sw = Math.min(0.5, r * 0.12);
+    for (let k = 0; k < spokes; k++) {
+      const a0 = (k / spokes) * Math.PI * 2;
+      const a1 = ((k + 1) / spokes) * Math.PI * 2;
+      const pts = [];
+      const g0 = a0 + sw / ri;
+      const g1 = a1 - sw / ri;
+      for (let i = 0; i <= 10; i++) {
+        const a = g0 + ((g1 - g0) * i) / 10;
+        pts.push([ri * Math.cos(a), ri * Math.sin(a)]);
+      }
+      const h0 = a0 + sw / rh;
+      const h1 = a1 - sw / rh;
+      for (let i = 10; i >= 0; i--) {
+        const a = h0 + ((h1 - h0) * i) / 10;
+        pts.push([rh * Math.cos(a), rh * Math.sin(a)]);
+      }
+      out += local(lpath(pts), "k thin", `fill:${T.plate[2]}`);
+    }
+  }
+  out += extra;
+  out += `</g>`;
+  out += circ(0, 0, Math.max(0.55, r * 0.16), `fill:${T.jewel}`, "k");
+  out += `</g>`;
+  return out;
+}
+
+function mvtSvg() {
+  let out = "";
+  const pl = roundRect(-MOV.w / 2, -MOV.h / 2, MOV.w / 2, MOV.h / 2, 6, 8);
+  out += local(lpath(pl), "k", `fill:${T.plate[1]}`);
+  // skeleton plate: closed windows in the baseplate
+  out += local(lpath(roundRect(-13, -14, -7, -9.6, 1.8, 4)), "k thin", `fill:${T.plate[2]}`);
+  out += local(lpath(roundRect(-13, 6.6, -9.6, 14, 1.6, 4)), "k thin", `fill:${T.plate[2]}`);
+  // reduction train from the rotor: OneWay wheel and a reduction wheel
+  out += wheel("oneway", ...MV.oneway, T.steel, 0, 22);
+  out += wheel("reduce", ...MV.reduce, T.gold, 4, 26);
+  // barrel: drum (unwinds) with the mainspring seen through an open ratchet wheel (winds)
+  const [bx, by, br] = MV.barrel;
+  out += `<g transform="translate(${bx} ${by})"><g id="barrelDrum">${local(lpath((() => {
+    const p = [];
+    const n = 60;
+    for (let i = 0; i < n; i++) {
+      const a = (i / n) * Math.PI * 2;
+      const rr = i % 2 ? br : br * 0.93;
+      p.push([rr * Math.cos(a), rr * Math.sin(a)]);
+    }
+    return p;
+  })()), "k", `fill:${T.gold[2]}`)}${circ(0, 0, br * 0.88, `fill:${T.plate[2]}`, "k")}</g>`;
+  out += `<path id="spring" class="spring" d=""/>`;
+  out += `<g id="ratchet">`;
+  const rt = [];
+  const rr = MV.ratchet[2];
+  for (let i = 0; i < 40; i++) {
+    const a = (i / 40) * Math.PI * 2;
+    rt.push([rr * Math.cos(a), rr * Math.sin(a)], [rr * 0.9 * Math.cos(a + 0.12), rr * 0.9 * Math.sin(a + 0.12)]);
+  }
+  // ratchet: a toothed rim with three open windows, the spring visible through them
+  let rim = lpath(rt);
+  const rin = [];
+  for (let i = 0; i < 48; i++) {
+    const a = -(i / 48) * Math.PI * 2;
+    rin.push([rr * 0.74 * Math.cos(a), rr * 0.74 * Math.sin(a)]);
+  }
+  rim += lpath(rin);
+  out += local(rim, "k", `fill:${T.steel[1]};fill-rule:evenodd`);
+  for (let k = 0; k < 3; k++) {
+    const a = (k / 3) * Math.PI * 2;
+    const ca = Math.cos(a);
+    const sa = Math.sin(a);
+    const pts = [[-0.45, 1.4], [0.45, 1.4], [0.45, rr * 0.76], [-0.45, rr * 0.76]].map(([u, v]) => [u * ca - v * sa, u * sa + v * ca]);
+    out += local(lpath(pts), "k thin", `fill:${T.steel[1]}`);
+  }
+  out += circ(0, 0, 1.6, `fill:${T.steel[0]}`, "k");
+  out += local(`M-1.6 0L1.6 0`, "k thin");
+  out += `</g></g>`;
+  // click: a pawl on the ratchet teeth, with its spring
+  out += `<g transform="translate(${r3(bx + 4.6)} ${r3(by - 4.2)})"><g id="click">${local("M0 0L3.4 -1.6L4.4 -0.6L1.2 1.1Z", "k", `fill:${T.steel[2]}`)}</g>${circ(3.9, -1.1, 0.5, `fill:${TI[0]}`, "k")}</g>`;
+  // going train
+  out += wheel("third", ...MV.third, T.gold, 4, 40);
+  out += wheel("fourth", ...MV.fourth, T.gold, 4, 36, circ(0, -MV.fourth[2] * 0.55, 0.5, "fill:var(--ac1)", "k"));
+  out += wheel("centre", ...MV.centre, T.gold, 5, 48);
+  out += wheel("esc", ...MV.esc, T.steel, 3, 20);
+  // train bridge: closed skeleton bar over third and fourth wheel pivots
+  const tb = [[-11.6, 0.6], [-6, -1.2], [-1.6, 7.6], [-2.6, 12.4], [-6.2, 12], [-11.2, 5.6]];
+  out += local(lpath(tb), "k", `fill:${TI[1]}`);
+  out += circ(MV.third[0], MV.third[1], 0.75, `fill:${T.jewel}`, "k");
+  out += circ(MV.fourth[0], MV.fourth[1], 0.7, `fill:${T.jewel}`, "k");
+  out += circ(-10.2, 3.6, 0.6, `fill:${TI[0]}`, "k") + circ(-4, 11.6, 0.6, `fill:${TI[0]}`, "k");
+  // pallet fork: pivot, two red stones toward the escape wheel, fork toward the balance
+  const [px, py] = MV.pallet;
+  out += `<g transform="translate(${px} ${py})"><g id="pallet">`;
+  out += local("M-2.6 -1.2L-0.4 -0.5L2.9 -2.6L3.3 -2.1L0.3 0.6L-2.4 1.6L-2.9 1.1L-1 0.1L-3 -0.6Z", "k", `fill:${T.steel[1]}`);
+  out += circ(-2.75, -0.9, 0.42, `fill:${T.jewel}`, "") + circ(-2.65, 1.35, 0.42, `fill:${T.jewel}`, "");
+  out += `</g>${circ(0, 0, 0.55, `fill:${T.jewel}`, "k")}</g>`;
+  // free-sprung balance: CuBe rim, four arms, four inertia weights, hairspring
+  const [qx, qy, qr] = MV.balance;
+  out += `<g transform="translate(${qx} ${qy})" id="balanceG">`;
+  out += `<g id="balance">`;
+  let bal = lpath(circlePts(0, 0, qr, 64)) + lpath(circlePts(0, 0, qr * 0.84, 64).reverse());
+  out += local(bal, "k", `fill:${T.gold[1]};fill-rule:evenodd`);
+  for (let k = 0; k < 4; k++) {
+    const a = (k / 4) * Math.PI * 2 + Math.PI / 4;
+    const ca = Math.cos(a);
+    const sa = Math.sin(a);
+    const arm = [[-0.32, 0.5], [0.32, 0.5], [0.32, qr * 0.86], [-0.32, qr * 0.86]].map(([u, v]) => [u * ca - v * sa, u * sa + v * ca]);
+    out += local(lpath(arm), "k thin", `fill:${T.gold[1]}`);
+    const wa = a + Math.PI / 4;
+    out += circ(qr * 0.72 * -Math.sin(wa), qr * 0.72 * Math.cos(wa), 0.55, `fill:${T.gold[0]}`, "k");
+  }
+  out += circ(0, 0, 0.9, `fill:${T.gold[2]}`, "k");
+  out += circ(0, 1.25, 0.32, `fill:${T.jewel}`, "");
+  out += `</g>`;
+  out += `<path id="hair" class="k hair" d=""/>`;
+  out += `</g>`;
+  // balance cock: a bridge from the plate edge to the balance staff, Incabloc jewel
+  const ck = [[qx + 6, qy + 6.2], [qx + 3.7, qy + 7.8], [qx - 0.9, qy + 0.9], [qx + 0.9, qy - 0.9]];
+  out += local(lpath(ck), "k", `fill:${TI[1]}`);
+  out += circ(qx, qy, 1.15, `fill:${TI[0]}`, "k") + circ(qx, qy, 0.6, `fill:${T.jewel}`, "k");
+  out += circ(qx + 4.6, qy + 6.6, 0.6, `fill:${TI[0]}`, "k");
+  // barrel bridge: closed bar across the ratchet arbor
+  const bb = [[bx - 9.4, by - 4.6], [bx - 1.5, by - 1.2], [bx - 1.2, by + 1.4], [bx - 9.8, by - 2.2]];
+  out += local(lpath(bb), "k", `fill:${TI[1]}`);
+  out += circ(bx - 8.4, by - 3.2, 0.62, `fill:${TI[0]}`, "k");
+  // the rotor's bearing seat at the centre
+  out += circ(0, 0, 3.3, `fill:${TI[1]}`, "k") + circ(0, 0, 2.2, `fill:${T.plate[2]}`, "k");
+  return out;
+}
+
+function rotorShape(rIn, rOut, span) {
+  const pts = [];
+  const n = 40;
+  for (let i = 0; i <= n; i++) {
+    const a = -span / 2 + (span * i) / n + Math.PI / 2;
+    pts.push([rOut * Math.cos(a), rOut * Math.sin(a)]);
+  }
+  for (let i = n; i >= 0; i--) {
+    const a = -span / 2 + (span * i) / n + Math.PI / 2;
+    pts.push([rIn * Math.cos(a), rIn * Math.sin(a)]);
+  }
+  return lpath(pts);
+}
+
+function rotorSvg(lower) {
+  const span = (150 * Math.PI) / 180;
+  const f = lower ? T.plat[2] : T.plat[0];
+  let out = "";
+  // three titanium arms from the hub to the platinum weight
+  for (const a of [-0.52, 0, 0.52]) {
+    const ca = Math.cos(a);
+    const sa = Math.sin(a);
+    const arm = [[-1.1, 2.4], [1.1, 2.4], [1.3, 9.8], [-1.3, 9.8]].map(([u, v]) => [u * ca - v * sa, u * sa + v * ca]);
+    out += local(lpath(arm), lower ? "" : "k", `fill:${lower ? "${TI[2]}" : "${TI[1]}"}`);
+  }
+  out += local(rotorShape(9.4, 14.3, span), lower ? "" : "k", `fill:${f}`);
+  if (!lower) {
+    out += local(rotorShape(10.6, 13.1, span - 0.22), "k thin", `fill:${T.plat[1]}`);
+    for (const a of [-0.9, -0.3, 0.3, 0.9]) out += circ(11.85 * Math.cos(a + Math.PI / 2), 11.85 * Math.sin(a + Math.PI / 2), 0.55, `fill:${TI[0]}`, "k");
+    // hub with the ceramic ball bearing
+    out += circ(0, 0, 3.2, `fill:${TI[0]}`, "k");
+    for (let k = 0; k < 10; k++) {
+      const a = (k / 10) * Math.PI * 2;
+      out += circ(2.2 * Math.cos(a), 2.2 * Math.sin(a), 0.42, "fill:#ffffff", "k hair");
+    }
+    out += circ(0, 0, 1.2, `fill:${TI[2]}`, "k");
+  } else out += circ(0, 0, 3.2, `fill:${TI[2]}`);
+  return out;
+}
+
+function insetSvg() {
+  const P = PI_;
+  let out = "";
+  // shadow just behind the turned-over watch
+  const foot = tonneau(CASE.a, CASE.b, CASE.n).map(([X, Y]) => [Y, X]);
+  out += shadowOf(P, foot, -5, -2.5);
+  // strap stubs, cut short: the head turned over on the paper
+  for (const s of [-1, 1]) {
+    const pl = roundRect(s > 0 ? CASE.b - 2 : -CASE.b - 6, -12, s > 0 ? CASE.b + 6 : -CASE.b + 2, 12, 3, 4);
+    out += prism(P, pl, -7.75, -5.2, T.strap);
+  }
+  out += caseSvg(P, -7.75, true);
+  out += `<path id="tptInset" d="" class="tpt"/>`;
+  const opening = roundRect(-MOV.w / 2 - 0.9, -MOV.h / 2 - 0.9, MOV.w / 2 + 0.9, MOV.h / 2 + 0.9, 6.5, 8).map(([X, Y]) => pr(P, Y, X, 0));
+  out += `<path d="${pathOf(opening)}" style="fill:var(--cs2)"/>`;
+  out += `<clipPath id="backClip"><path d="${pathOf(opening)}"/></clipPath>`;
+  out += `<g clip-path="url(#backClip)"><g transform="${planeM(P, 0, 0, ZM)}" class="plane" id="mvtG">${mvtSvg()}</g>`;
+  const g1 = [onPlane(P, 0, 0, 0, -18, 6), onPlane(P, 0, 0, 0, 6, -20)];
+  out += `<path class="glint thinG" d="${pathOf(g1, false)}"/></g>`;
+  out += `<path class="k" d="${pathOf(opening)}"/>`;
+  out += `<g transform="${planeM(P, 0, 0, 0)}" class="plane">${screwsSvg(CASE.a - 0.6, CASE.b - 0.6, 1.0)}</g>`;
+  // the arbor the rotor lifts off, then the rotor itself (thickness under it)
+  out += `<g id="post">${post(P, 0, 0, 1.15, ZM, ZR - 1.2, T.steel)}</g>`;
+  out += `<g transform="${planeM(P, 0, 0, ZR - 1.2)}" class="plane"><g id="rotorLow">${rotorSvg(true)}</g></g>`;
+  out += `<g transform="${planeM(P, 0, 0, ZR)}" class="plane" id="rotorTop"><g id="rotorBlur" style="opacity:0">${local(rotorShape(9.4, 14.3, Math.PI * 2 - 0.01), "", "fill:var(--blur)")}</g><g id="rotor">${rotorSvg(false)}</g></g>`;
+  return out;
+}
+
+function spiralPath(f, turn) {
+  // mainspring between arbor (r 1.7) and drum wall (r 5.3); f = 1 fully wound
+  const n = 9;
+  const pts = [];
+  const N = 220;
+  for (let i = 0; i <= N; i++) {
+    const u = i / N;
+    const wound = 1.75 + 1.9 * u;
+    const slack = 3.55 + 1.75 * u;
+    const g = wound * f + slack * (1 - f);
+    const r = i === N ? 5.25 : g;
+    const a = turn + u * n * Math.PI * 2 * (0.7 + 0.3 * f);
+    pts.push([r * Math.cos(a), r * Math.sin(a)]);
+  }
+  return pathOf(pts, false);
+}
+
+function hairPath(angleDeg) {
+  // hairspring: breathes as the balance swings, outer end held by the stud
+  const n = 9;
+  const pts = [];
+  const N = 200;
+  const tw = (angleDeg * Math.PI) / 180;
+  for (let i = 0; i <= N; i++) {
+    const u = i / N;
+    const r = 1.1 + 2.3 * u * (1 + 0.04 * (1 - u) * Math.sin(tw));
+    const a = u * n * Math.PI * 2 + tw * (1 - u);
+    pts.push([r * Math.cos(a), r * Math.sin(a)]);
+  }
+  return pathOf(pts, false);
+}
+
+
+// The live page: one model state, ten steps that drive it, and the drawing reading it.
+
+const $ = (s) => document.querySelector(s);
+const NS = "http://www.w3.org/2000/svg";
+
+// ---------- gauges: flat instrument faces nothing else covers ----------
+const GA = { x: 730, y: 666, r: 70 }; // power reserve
+function gaugesSvg() {
+  let out = `<g class="inst">`;
+  // power reserve plate
+  out += `<rect x="${GA.x - 92}" y="${GA.y - 98}" width="184" height="140" rx="14" class="plateFace"/>`;
+  out += `<path d="M${GA.x - GA.r} ${GA.y}A${GA.r} ${GA.r} 0 0 1 ${GA.x + GA.r} ${GA.y}" class="arcBg"/>`;
+  out += `<path id="resArc" d="" class="arcFill"/>`;
+  let t = "";
+  for (let h = 0; h <= 50; h += 5) {
+    const a = Math.PI * (1 - h / 50);
+    const r0 = GA.r;
+    const r1_ = GA.r - (h % 10 === 0 ? 10 : 6);
+    t += `M${r1(GA.x + r0 * Math.cos(a))} ${r1(GA.y - r0 * Math.sin(a))}L${r1(GA.x + r1_ * Math.cos(a))} ${r1(GA.y - r1_ * Math.sin(a))}`;
+    if (h % 10 === 0) out += `<text x="${r1(GA.x + (GA.r - 19) * Math.cos(a))}" y="${r1(GA.y - (GA.r - 19) * Math.sin(a) + 4)}" class="gnum">${h}</text>`;
+  }
+  out += `<path d="${t}" class="k"/>`;
+  out += `<path d="M${GA.x - GA.r} ${GA.y}L${GA.x + GA.r} ${GA.y}" class="k"/>`;
+  out += `<g id="resGhost"><path d="M0 0L${GA.r - 4} 0" class="ghost"/></g>`;
+  out += `<g id="resNeedle"><path d="M-6 -2.6L${GA.r - 12} -0.8L${GA.r - 12} 0.8L-6 2.6Z" class="needle"/></g>`;
+  out += `<circle cx="${GA.x}" cy="${GA.y}" r="5" class="hub"/>`;
+  out += `<text x="${GA.x}" y="${GA.y + 22}" class="glab" id="resText">0.0 h</text>`;
+  out += `<text x="${GA.x}" y="${GA.y - 78}" class="gcap">power reserve</text>`;
+  // beat counter + tick clock, a second plate
+  const bx = 834;
+  const by = 568;
+  out += `<rect x="${bx}" y="${by}" width="148" height="140" rx="14" class="plateFace"/>`;
+  out += `<text x="${bx + 75}" y="${by + 24}" class="gcap">beats</text>`;
+  out += `<rect x="${bx + 12}" y="${by + 31}" width="124" height="36" rx="6" class="odo"/>`;
+  out += `<text x="${bx + 75}" y="${by + 56}" class="odoT" id="beatText">0</text>`;
+  // tick clock: a dial whose hand follows the balance, a dot that flashes each beat
+  const tx = bx + 46;
+  const ty = by + 102;
+  out += `<circle cx="${tx}" cy="${ty}" r="22" class="tickFace"/>`;
+  let tt = "";
+  for (let d = -270; d <= 270; d += 45) {
+    const a = ((d / 2 - 90) * Math.PI) / 180;
+    tt += `M${r1(tx + 22 * Math.cos(a))} ${r1(ty + 22 * Math.sin(a))}L${r1(tx + 17 * Math.cos(a))} ${r1(ty + 17 * Math.sin(a))}`;
+  }
+  out += `<path d="${tt}" class="k thin"/>`;
+  out += `<g id="tickHand" transform="translate(${tx} ${ty})"><path d="M0 3L0 -17" class="tickNeedle"/></g>`;
+  out += `<circle cx="${tx}" cy="${ty}" r="2.6" class="hub"/>`;
+  out += `<circle id="tickFlash" cx="${bx + 112}" cy="${ty - 8}" r="8" class="flash"/>`;
+  out += `<text x="${bx + 112}" y="${ty + 18}" class="gsmall" id="hzText">4 Hz</text>`;
+  out += `</g>`;
+  return out;
+}
+
+// ---------- the page's single state ----------
+let S = initial();
+const V = {
+  lift: 1, // watch above the wrist (put-on)
+  armRot: 0, // screen-space swing, degrees
+  armOut: 0, // arm slid away (take-off)
+  crownOut: 0,
+  fnAng: FN_ANG[0],
+  spinVis: 0, // extra rotor angle drawn while time is compressed
+  blur: 0,
+  visRun: 0, // clock for parts too fast to draw at compressed time
+  dateRoll: 0,
+  dateShown: S.day0,
+  speed: 1,
+  sound: {},
+  lit: "",
+  tickFlash: 0,
+  lastBeat: 0,
+  flip: 0, // 0 on the wrist, 1 turned over and shown large
+  flipTo: 0,
+};
+let inputs = { steps: 8000, oneWay: true, act: "walk" };
+const motionOf = () => ACTIVITIES[inputs.act]?.motion ?? 0;
+const dayOf = () => dayModel({ steps: inputs.steps, motion: motionOf(), oneWay: inputs.oneWay });
+
+const STEPS = [
+  {
+    id: "on",
+    label: "Put it on",
+    hint: "The watch goes on your wrist. It has no battery, and its spring is empty, so it is stopped.",
+    dur: () => 1.8,
+    lit: "watchLit",
+  },
+  {
+    id: "swing",
+    label: "Swing the wrist",
+    hint: "When you swing your arm, a heavy platinum weight inside tries to keep hanging down, so it swings.",
+    dur: () => 6,
+    lit: "rotorLit",
+    sound: "whirr",
+  },
+  {
+    id: "spin",
+    label: "Rotor spins",
+    hint: "A big swing sends the weight all the way round. Every turn winds the spring a tiny bit.",
+    dur: () => 5,
+    lit: "rotorLit",
+    sound: "whirr",
+  },
+  {
+    id: "wind",
+    label: "Mainspring tightens",
+    hint: () => {
+      const a = ACTIVITIES[inputs.act];
+      const d = dayOf();
+      const day = inputs.act === "walk" || !a ? "A whole day on your wrist" : `A day of ${a.name.toLowerCase()}`;
+      return `${day} turns the weight about ${Math.round(d.turns).toLocaleString("en-US")} times. The spring in its drum coils tighter, like a wind-up toy.`;
+    },
+    dur: () => 10,
+    lit: "barrelLit",
+    sound: "click",
+  },
+  {
+    id: "train",
+    label: "Gear train turns",
+    hint: "The spring pushes back slowly. A row of wheels passes the push along, each faster than the last.",
+    dur: () => 6,
+    lit: "trainLit",
+  },
+  {
+    id: "beat",
+    label: "Balance beats",
+    hint: "The balance wheel swings back and forth 8 times a second. Each swing lets the escape wheel move one notch: tick!",
+    dur: () => 8,
+    lit: "balanceLit",
+    sound: "tick",
+  },
+  {
+    id: "fn",
+    label: "Set the function: W → D → H",
+    hint: "The crown has three jobs. The little hand at 2 o'clock shows which: W winds, D sets the date, H sets the hands.",
+    dur: () => 3.4,
+    lit: "fnLit",
+    sound: "clack",
+  },
+  {
+    id: "set",
+    label: "Set the time",
+    hint: "In H, turning the crown moves the hands. We set them to the real time.",
+    dur: () => 3.6,
+    lit: "handsLit",
+    sound: "clack",
+  },
+  {
+    id: "oneway",
+    label: "Turn it back: OneWay",
+    hint: "The weight only winds when it turns one way. Turned back, it slips freely and winds nothing.",
+    dur: () => 7,
+    lit: "rotorLit",
+    sound: "zip",
+  },
+  {
+    id: "off",
+    label: "Take it off, watch it run down",
+    hint: "Off your wrist nothing winds it. The spring lets go at a steady pace until the watch stops.",
+    dur: () => (V.offDur || 12),
+    lit: "gaugeLit",
+    sound: "tick",
+  },
+];
+
+const ease = (t) => (t <= 0 ? 0 : t >= 1 ? 1 : t * t * (3 - 2 * t));
+const env = (t, d, a = 0.8) => Math.min(ease(t / a), ease((d - t) / a));
+const clamp01 = (v) => Math.max(0, Math.min(1, v));
+
+let cur = -1; // running step
+let next = 0; // next step to press
+let tStep = 0;
+let mode = "manual";
+let autoWait = 0;
+let showMe = false;
+let stepMemo = {};
+
+// Run one step for dt screen seconds; returns the model dt and inputs to apply.
+function runStep(i, t, dt) {
+  const st = STEPS[i];
+  const d = st.dur();
+  const inp = { oneWay: inputs.oneWay, fn: S.fn };
+  let speed = 1;
+  let badge = null;
+  const snd = {};
+  switch (st.id) {
+    case "on":
+      V.lift = 1 - ease(t / 1.4);
+      break;
+    case "swing": {
+      const e = env(t, d);
+      const w = 2 * Math.PI * 1.1;
+      inp.roll = 0.6 * e * Math.sin(w * t);
+      inp.rollA = -0.6 * e * w * w * Math.sin(w * t);
+      V.armRot = 3.2 * e * Math.sin(w * t);
+      snd.whirr = clamp01(Math.abs(S.rotorV) / 3) * e;
+      break;
+    }
+    case "spin": {
+      const e = env(t, d, 0.9);
+      inp.spin = 2 * Math.PI * 1.1 * e;
+      V.armRot = 3.6 * e * Math.sin(2 * Math.PI * 1.1 * t);
+      snd.whirr = e;
+      break;
+    }
+    case "wind": {
+      const real = SPEC.wornH.v * 3600;
+      speed = speedOf(real, d);
+      const day = dayOf();
+      inp.wear = day.gainH / SPEC.wornH.v; // reserve s per worn s
+      const e = env(t, d, 0.6);
+      V.spinVis += dt * 2 * Math.PI * 1.4 * e * (dayOf().turns > 0 ? 1 : 0);
+      V.blur = 0.55 * e * (dayOf().turns > 0 ? 1 : 0);
+      V.armRot = 1.8 * e * Math.sin(2 * Math.PI * 0.7 * t);
+      snd.click = e * (dayOf().turns > 0 ? 1 : 0);
+      break;
+    }
+    case "train":
+      snd.tick = 0.35;
+      break;
+    case "beat": {
+      const k = ease((t - 4) / 0.6);
+      speed = 1 / 8 + (1 - 1 / 8) * k;
+      snd.tick = 1;
+      break;
+    }
+    case "fn": {
+      V.crownOut = ease(t / 0.4);
+      const fn = t < 0.9 ? "W" : t < 2.0 ? "D" : "H";
+      if (fn !== S.fn) {
+        inp.fn = fn;
+        V.clackT = 0;
+      }
+      if (fn === "D" && !stepMemo.dateSet) {
+        // D: quick-set the date to today's date
+        const worldDate = 20 + Math.floor(S.world / 86400);
+        S = { ...S, day0: S.day0 + (worldDate - read(S).date) };
+        stepMemo.dateSet = true;
+      }
+      snd.clack = V.clackT != null && V.clackT < 0.5 ? 1 - V.clackT / 0.5 : 0;
+      break;
+    }
+    case "set": {
+      // H: the hands go the short way round to the real time; the date stays put
+      if (stepMemo.setDelta == null) {
+        const wl = S.world + 2.9;
+        let d = (((wl - S.watch) % 86400) + 86400) % 86400;
+        if (d > 43200) d -= 86400;
+        stepMemo.setDelta = d - 2.6;
+        stepMemo.setDone = 0;
+      }
+      const a = clamp01((t - 0.3) / 2.3);
+      const want = stepMemo.setDelta * ease(a) - stepMemo.setDone;
+      inp.setBy = want;
+      stepMemo.setDone += want;
+      if (t > 0.3 && t < 2.6) badge = Math.abs(stepMemo.setDelta) / 2.3;
+      if (t > 2.9 && S.fn !== "W") {
+        inp.fn = "W";
+        V.clackT = 0;
+      }
+      V.crownOut = 1 - ease((t - 2.9) / 0.4);
+      snd.clack = V.clackT != null && V.clackT < 0.5 ? 1 - V.clackT / 0.5 : 0;
+      break;
+    }
+    case "oneway": {
+      const back = t < 3.2;
+      const e = back ? env(t, 3.2, 0.6) : env(t - 3.4, d - 3.4, 0.6);
+      inp.spin = (back ? -1 : 1) * 2 * Math.PI * 1.0 * e;
+      V.armRot = (back ? -3.6 : 3.6) * e * Math.sin(2 * Math.PI * 1.0 * t);
+      if (back) snd.zip = e;
+      else snd.whirr = e;
+      break;
+    }
+    case "off": {
+      V.armOut = ease(t / 1.4);
+      if (t < 1.6) break;
+      if (stepMemo.r0 == null) {
+        stepMemo.r0 = S.reserve;
+        // run down at a pace the minute hand can still be followed
+        stepMemo.runDur = Math.max(3, Math.min(31, S.reserve / 5760));
+        V.offDur = 1.6 + stepMemo.runDur + 1.6;
+      }
+      const tr = t - 1.6;
+      if (tr < stepMemo.runDur) {
+        speed = stepMemo.r0 > 0 ? stepMemo.r0 / stepMemo.runDur : 1;
+        inp.worn = false;
+      } else speed = 1;
+      snd.tick = S.reserve > 0 ? 0.6 : 0;
+      break;
+    }
+  }
+  if (V.clackT != null) V.clackT += dt;
+  return { inp, speed, snd, badge: badge ?? speed };
+}
+
+let lastRealDt = 0;
+let badgeNow = 1;
+function advance(dt) {
+  lastRealDt = dt;
+  // flip at a constant pace (0.9 s end to end); draw eases it in and out
+  V.flip += Math.sign(V.flipTo - V.flip) * Math.min(Math.abs(V.flipTo - V.flip), dt / 0.9);
+  let speed = 1;
+  let snd = {};
+  if (cur >= 0) {
+    const r = runStep(cur, tStep, dt);
+    speed = r.speed;
+    snd = r.snd;
+    badgeNow = r.badge;
+    // integrate the model: small substeps when the rotor is live, one when time is compressed
+    const simDt = dt * speed;
+    const live = r.inp.roll != null || r.inp.spin != null;
+    const n = live ? Math.max(1, Math.ceil(dt * 240)) : 1;
+    const inp = { ...r.inp };
+    const setBy = inp.setBy || 0;
+    for (let k = 0; k < n; k++) {
+      inp.setBy = k === 0 ? setBy : 0;
+      const before = inp.setBy ? Math.floor(S.watch / 86400) : null;
+      S = step(S, simDt / n, inp);
+      if (before != null) S = { ...S, day0: S.day0 + before - Math.floor(S.watch / 86400) };
+      if (inp.fn) delete inp.fn;
+    }
+    tStep += dt;
+    if (tStep >= STEPS[cur].dur()) finishStep();
+  } else {
+    S = step(S, dt, { worn: V.armOut < 0.5, oneWay: inputs.oneWay });
+    if (mode === "auto" || showMe) {
+      autoWait -= dt;
+      if (autoWait <= 0) {
+        if (next >= STEPS.length) {
+          if (mode === "auto") {
+            reset();
+            autoWait = 0.6;
+          } else showMe = false;
+        } else startStep(next);
+      }
+    }
+  }
+  V.speed += (speed - V.speed) * (speed > V.speed * 4 || speed < V.speed / 4 ? 1 : 1 - Math.exp(-dt * 8));
+  V.speedShown = cur >= 0 ? badgeNow : 1;
+  V.sound = snd;
+  // parts too quick to draw at compressed time run on a capped clock
+  const R = read(S);
+  if (R.running) V.visRun += dt * Math.min(speed, 1);
+  V.blurNow = V.blur;
+  if (cur < 0 || STEPS[cur].id !== "wind") V.blur *= Math.exp(-dt * 6);
+  return R;
+}
+
+function startStep(i) {
+  cur = i;
+  tStep = 0;
+  stepMemo = {};
+  V.clackT = null;
+  if (STEPS[i].id === "off") V.offDur = 12;
+  renderButtons();
+  const h = STEPS[i].hint;
+  setHint(typeof h === "function" ? h() : h);
+}
+
+// Any step, any time: the steps before it are replayed silently on the model,
+// so the watch arrives in the state that step expects (on the wrist, wound, set).
+function jumpTo(i) {
+  if (i === next && cur < 0) {
+    startStep(i);
+    return;
+  }
+  const keepAuto = autoWait;
+  reset();
+  for (let k = 0; k < i; k++) {
+    startStep(k);
+    let guard = 0;
+    while (cur === k && guard++ < 5000) advance(1 / 30);
+  }
+  V.armRot = 0;
+  V.dateShown = read(S).date;
+  V.dateRoll = 0;
+  autoWait = keepAuto;
+  startStep(i);
+}
+
+function finishStep() {
+  const done = STEPS[cur].id;
+  cur = -1;
+  next++;
+  V.armRot = 0;
+  autoWait = 0.9;
+  if (done === "off") autoWait = 2.5;
+  renderButtons();
+  setHint(next < STEPS.length ? "Next: " + STEPS[next].label.replace(/:.*$/, "") + "." : "It stopped: the spring is empty. Start over, or try the sliders below.");
+}
+
+function reset() {
+  S = initial();
+  Object.assign(V, { lift: 1, armRot: 0, armOut: 0, crownOut: 0, fnAng: FN_ANG[0], spinVis: 0, blur: 0, visRun: 0, speed: 1, dateShown: S.day0, dateRoll: 0 });
+  cur = -1;
+  next = 0;
+  tStep = 0;
+  autoWait = 0.8;
+  stepMemo = {};
+  renderButtons();
+  setHint("A watch with no battery. Press 1 to put it on.");
+}
+
+// ---------- drawing the state ----------
+const el = {};
+function grab() {
+  for (const id of [
+    "armSwing", "armBody", "cushion", "watchG", "strapG", "hourH", "minH", "fnHandR", "dateStrip", "crown",
+    "rotor", "rotorLow", "rotorBlur", "barrelDrum", "ratchet", "spring", "click", "oneway", "reduce", "centre", "third",
+    "fourth", "esc", "pallet", "balance", "hair", "tickHand", "tickFlash", "resNeedle", "resGhost", "resArc", "resText",
+    "beatText", "speedG", "speedT", "readout", "watchShade", "hzText", "insetG", "insetSnd", "incapG", "flipCap",
+    "fRatchet", "fFourth", "fEsc", "fBalance", "fHair",
+  ]) el[id] = document.getElementById(id);
+  el.snd = {};
+  for (const k of ["whirr", "click", "tick", "clack", "zip"]) el.snd[k] = document.getElementById("snd-" + k);
+  el.lit = document.querySelectorAll("[data-lit]");
+}
+
+const ELBOW = pr(PM, 0, -40, 30); // the swing pivots near the forearm, so the hand stays clear of the inset
+let ghostH = 50;
+
+// Flip: the wrist fades, and the caseback view slides to the middle and grows.
+const FLIP = { from: null, to: [468, 362], scale: 1.85 };
+function flipTransform(f) {
+  if (!FLIP.from) {
+    const b = el.insetG.getBBox();
+    FLIP.from = [b.x + b.width / 2, b.y + b.height / 2];
+  }
+  const [x0, y0] = FLIP.from;
+  const cx = x0 + (FLIP.to[0] - x0) * f;
+  const cy = y0 + (FLIP.to[1] - y0) * f;
+  const sc = 1 + (FLIP.scale - 1) * f;
+  return `translate(${r1(cx)} ${r1(cy)}) scale(${r3(sc)}) translate(${r1(-x0)} ${r1(-y0)})`;
+}
+
+function draw(R) {
+  const tr = (n, v) => n && n.setAttribute("transform", v);
+  const ff = ease(V.flip);
+  const flipT = flipTransform(ff);
+  tr(el.insetG, flipT);
+  tr(el.insetSnd, flipT);
+  el.armSwing.style.opacity = r3(1 - ease(Math.min(1, ff * 1.6)));
+  el.armSwing.style.visibility = ff > 0.99 ? "hidden" : "visible";
+  el.incapG.style.opacity = r3(1 - ease(Math.min(1, ff * 2)));
+  el.flipCap.style.opacity = r3(ease((ff - 0.5) * 2));
+  tr(el.armSwing, `rotate(${r3(V.armRot)} ${r1(ELBOW[0])} ${r1(ELBOW[1])})`);
+  const out = V.armOut;
+  tr(el.armBody, `translate(${r1(out * 300 * Math.cos(Math.PI / 6))} ${r1(out * 300 * 0.5)})`);
+  el.armBody.style.opacity = r3(1 - ease(out * 1.2));
+  el.cushion.style.opacity = r3(ease((out - 0.15) / 0.6));
+  tr(el.watchG, `translate(0 ${r1(-V.lift * 70)})`);
+  el.strapG.style.opacity = r3(clamp01((0.35 - V.lift) / 0.35));
+  el.watchShade.style.opacity = r3(1 - V.lift);
+  // hands, function hand, crown
+  tr(el.hourH, `rotate(${r3(R.hourDeg)})`);
+  tr(el.minH, `rotate(${r3(R.minDeg)})`);
+  const fnI = "WDH".indexOf(S.fn);
+  V.fnAng += (FN_ANG[fnI] - V.fnAng) * (1 - Math.exp(-lastRealDt * 14));
+  const fd = clockDir((2 / 12) * Math.PI * 2);
+  const axis = Math.atan2(fd[1], fd[0]);
+  tr(el.fnHandR, `rotate(${r3(((axis + V.fnAng) * 180) / Math.PI)})`);
+  const cdx = V.crownOut * 1.8;
+  tr(el.crown, `translate(${r1(cdx * C30 * PM.k)} ${r1(cdx * 0.5 * PM.k)})`);
+  // date strip rolls toward the date the model shows
+  const target = R.date;
+  if (target !== V.dateShown) {
+    V.dateRoll += lastRealDt / 0.45;
+    if (V.dateRoll >= 1) {
+      V.dateShown = target;
+      V.dateRoll = 0;
+    }
+  }
+  const dr = ease(V.dateRoll);
+  const nxt = target;
+  el.dateStrip.innerHTML = dateDigits(V.dateShown, 0) + dateDigits(nxt, 7.4);
+  tr(el.dateStrip, `translate(0 ${r3(-dr * 7.4)})`);
+  // movement
+  const rot = R.rotorDeg + (V.spinVis * 180) / Math.PI;
+  tr(el.rotor, `rotate(${r3(rot)})`);
+  tr(el.rotorLow, `rotate(${r3(rot)})`);
+  el.rotorBlur.style.opacity = r3(V.blur);
+  tr(el.barrelDrum, `rotate(${r3(R.barrelDeg)})`);
+  tr(el.ratchet, `rotate(${r3(R.ratchetDeg)})`);
+  el.spring.setAttribute("d", spiralPath(R.reserveFrac, (R.ratchetDeg * Math.PI) / 180));
+  const toothPhase = ((-R.ratchetDeg / 9) % 1 + 1) % 1;
+  tr(el.click, `rotate(${r3(-7 * Math.sin(Math.PI * toothPhase) ** 2)})`);
+  tr(el.oneway, `rotate(${r3(-rot * 2.4)})`);
+  tr(el.reduce, `rotate(${r3(R.ratchetDeg * -1.8)})`);
+  tr(el.centre, `rotate(${r3(R.centreDeg)})`);
+  const vr = V.visRun;
+  tr(el.third, `rotate(${r3(-(vr / 3600) * 360 * 7.5)})`);
+  tr(el.fourth, `rotate(${r3((vr / 60) * 360)})`);
+  tr(el.esc, `rotate(${r3(-escAngle(vr))})`);
+  const amp = R.amp;
+  const bal = amp > 0 ? amp * Math.sin(2 * Math.PI * HZ * vr) : 0;
+  tr(el.balance, `rotate(${r3(bal)})`);
+  el.hair.setAttribute("d", hairPath(bal));
+  tr(el.pallet, `rotate(${r3(9 * Math.tanh(bal / 25))})`);
+  // the same parts seen through the dial from the front turn the other way round
+  tr(el.fRatchet, `rotate(${r3(-R.ratchetDeg)})`);
+  tr(el.fFourth, `rotate(${r3(-(vr / 60) * 360)})`);
+  tr(el.fEsc, `rotate(${r3(escAngle(vr))})`);
+  tr(el.fBalance, `rotate(${r3(-bal)})`);
+  el.fHair.setAttribute("d", hairPath(-bal));
+  // gauges
+  const fr = Math.max(0, Math.min(1, R.reserveFrac));
+  tr(el.resNeedle, `translate(${GA.x} ${GA.y}) rotate(${r3(-180 + 180 * fr)})`);
+  tr(el.resGhost, `translate(${GA.x} ${GA.y}) rotate(${r3(-180 + (180 * ghostH) / SPEC.reserveH.v)})`);
+  const a = Math.PI * (1 - fr);
+  el.resArc.setAttribute("d", fr > 0.002 ? `M${GA.x - GA.r + 5} ${GA.y}A${GA.r - 5} ${GA.r - 5} 0 0 1 ${r1(GA.x + (GA.r - 5) * Math.cos(a))} ${r1(GA.y - (GA.r - 5) * Math.sin(a))}` : "");
+  el.resText.textContent = fmtH(R.reserveH) + " h";
+  el.beatText.textContent = R.beats.toLocaleString("en-US");
+  tr(el.tickHand, `translate(${GA.tx || 264} ${GA.ty || 560}) rotate(${r3(bal / 2)})`);
+  if (R.beats !== V.lastBeat) {
+    V.tickFlash = 1;
+    V.lastBeat = R.beats;
+  }
+  V.tickFlash *= Math.exp(-lastRealDt * 18);
+  el.tickFlash.style.opacity = r3(V.speed <= 1.01 ? V.tickFlash : R.running ? 0.6 : 0);
+  el.hzText.textContent = R.running ? "4 Hz" : "stopped";
+  // speed badge, from the real seconds each screen second stands for
+  const sp = V.speedShown;
+  const showSpeed = cur >= 0 && STEPS[cur].id !== "on";
+  el.speedG.style.opacity = showSpeed ? 1 : 0;
+  el.speedT.textContent = speedLabel(sp);
+  // sound words
+  for (const k in el.snd) {
+    const v = V.sound[k] || 0;
+    const n = el.snd[k];
+    n.style.opacity = r3(v);
+    const wob = k === "tick" ? Math.sin(performance.now() / 60) : Math.sin(performance.now() / 120);
+    n.setAttribute("transform", `rotate(${r3(wob * 3)} ${n.dataset.x} ${n.dataset.y})`);
+  }
+  // highlight
+  const lit = cur >= 0 ? STEPS[cur].lit : "";
+  for (const n of el.lit) n.classList.toggle("lit", n.dataset.lit === lit);
+  writeReadout(R);
+}
+
+function dateDigits(d, y) {
+  const s = String(d).padStart(2, "0");
+  return `<text x="0" y="${r3(y - 0.45)}" class="dnum">${s[0]}</text><text x="0" y="${r3(y + 3.0)}" class="dnum">${s[1]}</text>`;
+}
+
+const pad = (n) => String(n).padStart(2, "0");
+// one formatter for hours of reserve, so every place shows the same number
+const fmtH = (h) => h.toFixed(h < 1 ? 2 : 1);
+function writeReadout(R) {
+  const w = R.worldTod;
+  const chips = $("#live");
+  if (!chips) return;
+  const set = (k, v) => {
+    const n = chips.querySelector(`[data-k="${k}"]`);
+    if (n && n.textContent !== v) n.textContent = v;
+  };
+  set("reserve", fmtH(R.reserveH) + " h of 50 h");
+  set("beats", R.beats.toLocaleString("en-US") + " beats");
+  set("watch", `watch ${pad(R.hh)}:${pad(R.mm)} · date ${R.date}`);
+  set("world", `real ${pad(Math.floor(w / 3600))}:${pad(Math.floor((w % 3600) / 60))}`);
+  set("turns", (S.wound / (2 * Math.PI)).toFixed(1) + " winding rotor turns");
+  set("amp", R.running ? `balance ${Math.round(R.amp)}° amplitude` : "balance at rest");
+  set("fn", "crown: " + { W: "W winding", D: "D date", H: "H hands" }[S.fn]);
+  $("#readout").textContent = R.running ? `${fmtH(R.reserveH)} h left · ${R.beats.toLocaleString("en-US")} beats` : `stopped · ${fmtH(R.reserveH)} h`;
+}
+
+// ---------- page ----------
+function setHint(s) {
+  const h = $("#hint");
+  if (h.textContent !== s) h.textContent = s;
+}
+
+function renderButtons() {
+  const list = $("#steps");
+  list.querySelectorAll("button").forEach((b, i) => {
+    const state = i === cur ? "running" : i < next ? "done" : i === next && cur < 0 ? "next" : "later";
+    b.dataset.state = state;
+    b.disabled = false;
+    b.classList.toggle("pulse", state === "next" && mode === "manual" && !showMe);
+  });
+  document.querySelectorAll(".mode button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.mode === mode)));
+}
+
+function buildPage() {
+  const svg = $("#fig");
+  svg.innerHTML = `
+  <defs>
+    <pattern id="tptP" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(28)">
+      <rect width="6" height="6" fill="#4f535c"/><path d="M0 1.2H6M0 3.6H6" stroke="#2f3238" stroke-width="1.1"/><path d="M0 4.8H6" stroke="#8b8f98" stroke-width=".6"/>
+    </pattern>
+  </defs>
+  <clipPath id="cardClip"><rect x="0" y="0" width="${W}" height="${H}" rx="22"/></clipPath><rect x="0" y="0" width="${W}" height="${H}" rx="22" class="paper"/><g clip-path="url(#cardClip)">
+  <g id="armSwing">
+    <g id="armBody">${armSvg()}</g>
+    <g id="cushion" style="opacity:0">${cushionSvg()}</g>
+    <path id="watchShade" class="skinShade" d="${pathOf(hull(tonneau(CASE.a, CASE.b, CASE.n).map(([X, Y]) => pr(PM, Y - 3.5, X - 1.5, 35.4))))}"/>
+    <g id="strapG">${strapSvg()}</g>
+    <g id="watchG" data-lit="watchLit">${watchSvg()}</g>
+  </g>
+  <g id="incapG">
+    <text x="${PI_.ox - 236}" y="84" class="incap">the same watch, turned over:</text>
+    <text x="${PI_.ox - 236}" y="106" class="incap">through the caseback, rotor lifted</text>
+  </g>
+  <text id="flipCap" x="${W / 2}" y="92" class="incap big" style="opacity:0">flipped over: the back of the watch, rotor lifted</text>
+  <g id="insetG">
+    ${insetSvg()}
+  </g>
+  ${gaugesSvg()}
+  </g><g class="figlab"><rect x="14" y="14" width="78" height="38" rx="12" class="labBg"/><text x="26" y="42" class="figno">Fig. 1</text></g><text x="${W - 26}" y="40" class="figtitle">RM 67-01 · caliber CRMA6</text><g id="speedG" style="opacity:0"><rect x="${W / 2 - 52}" y="20" width="104" height="34" rx="17" class="badge"/><text id="speedT" x="${W / 2}" y="43" class="badgeT">×1</text></g>
+  <g id="insetSnd">
+  ${soundWord("whirr", "whirr", PI_.ox - 196, 214, -8)}
+  ${soundWord("zip", "zzzip… slips", PI_.ox - 200, 214, -8)}
+  ${soundWord("click", "click-click", PI_.ox + 150, 150, 6)}
+  ${soundWord("tick", "tick-tick-tick-tick", PI_.ox + 60, 420, -4)}
+  </g>
+  ${soundWord("clack", "clack!", 486, 150, -6)}
+  `;
+  // highlight groups on the movement
+  const mark = (sel, lit) => {
+    const n = typeof sel === "string" ? document.getElementById(sel) : sel;
+    if (n) n.setAttribute("data-lit", lit);
+  };
+  mark("rotorTop", "rotorLit");
+  for (const id of ["third", "fourth", "centre", "esc"]) mark(document.getElementById(id).parentNode, "trainLit");
+  mark("balanceG", "balanceLit");
+  mark("fBalanceG", "balanceLit");
+  mark("fTrainG", "trainLit");
+  mark("fBarrelG", "barrelLit");
+  mark(document.getElementById("pallet").parentNode, "balanceLit");
+  mark(document.getElementById("barrelDrum").parentNode, "barrelLit");
+  mark("fnDial", "fnLit");
+  mark("crown", "fnLit");
+  mark("hourH", "handsLit");
+  mark("minH", "handsLit");
+  document.querySelector(".inst").setAttribute("data-lit", "gaugeLit");
+  GA.tx = 264;
+  GA.ty = 560;
+  grab();
+  // tick-clock hand position from the plate
+  const tc = document.querySelector(".tickFace");
+  GA.tx = +tc.getAttribute("cx");
+  GA.ty = +tc.getAttribute("cy");
+
+  // step buttons
+  const list = $("#steps");
+  list.innerHTML = STEPS.map((s, i) => `<li><button type="button" data-i="${i}"><span class="n">${i + 1}</span><span class="l">${s.label}</span></button></li>`).join("");
+  list.addEventListener("click", (e) => {
+    const b = e.target.closest("button");
+    if (!b) return;
+    jumpTo(+b.dataset.i);
+  });
+  document.querySelectorAll(".mode button").forEach((b) =>
+    b.addEventListener("click", () => {
+      mode = b.dataset.mode;
+      try {
+        localStorage.setItem("rm67-mode", mode);
+      } catch {}
+      autoWait = 0.4;
+      renderButtons();
+    }),
+  );
+  const flipBtn = $("#flip");
+  flipBtn.addEventListener("click", () => {
+    V.flipTo = V.flipTo ? 0 : 1;
+    flipBtn.setAttribute("aria-pressed", String(!!V.flipTo));
+    flipBtn.textContent = V.flipTo ? "↺ Back on the wrist" : "↻ Flip the watch over";
+  });
+  $("#restart").addEventListener("click", (e) => {
+    e.preventDefault();
+    showMe = false;
+    reset();
+  });
+  $("#showme").addEventListener("click", () => {
+    reset();
+    showMe = true;
+    autoWait = 0.3;
+    renderButtons();
+    $("#fig").scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+  // swatches
+  document.querySelectorAll(".sw").forEach((b) =>
+    b.addEventListener("click", () => {
+      applyVariant(b.dataset.v);
+      document.querySelectorAll(".sw").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+    }),
+  );
+  // sliders
+  const act = $("#act");
+  const wind = document.querySelectorAll("input[name=wind]");
+  const upd = () => {
+    inputs.steps = +act.value;
+    inputs.oneWay = document.querySelector("input[name=wind]:checked").value === "one";
+    ledger();
+  };
+  act.addEventListener("input", () => {
+    inputs.act = "walk";
+    markAct();
+    upd();
+  });
+  const markAct = () => document.querySelectorAll(".act").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.act === inputs.act)));
+  document.querySelectorAll(".act").forEach((b) =>
+    b.addEventListener("click", () => {
+      inputs.act = b.dataset.act;
+      act.value = ACTIVITIES[inputs.act].steps;
+      markAct();
+      upd();
+    }),
+  );
+  markAct();
+  wind.forEach((w) => w.addEventListener("change", upd));
+  upd();
+  try {
+    const m = localStorage.getItem("rm67-mode");
+    if (m === "auto" || m === "manual") mode = m;
+  } catch {}
+  reset();
+}
+
+function soundWord(k, text, x, y, rot) {
+  return `<text id="snd-${k}" data-x="${x}" data-y="${y}" x="${x}" y="${y}" class="snd" style="opacity:0" transform="rotate(${rot} ${x} ${y})">${text}</text>`;
+}
+
+const VARIANTS = {
+  rosegold: { cs: ["#f8dcc8", "#e3ae8e", "#bf8566"], st: ["#8fb4ea", "#4a7bcf", "#30569b"], ac: ["#ffffff", "#dfe3e8", "#8d95a0"], tpt: false },
+  titanium: { cs: ["#e6e8ea", "#c4c9ce", "#9ba2aa"], st: ["#5a5f70", "#3f4352", "#2b2e3b"], ac: ["#ffb3a3", "#ec5a43", "#b9402e"], tpt: false },
+  carbon: { cs: ["#7a7e87", "#5a5e67", "#41444c"], st: ["#5a5f70", "#3f4352", "#2b2e3b"], ac: ["#b9f0d8", "#3fbf8f", "#2b8a66"], tpt: true },
+  white: { cs: ["#e6e8ea", "#c4c9ce", "#9ba2aa"], st: ["#ffffff", "#ebe7de", "#cfc9bc"], ac: ["#a9c8ff", "#3f74d8", "#2c55a3"], tpt: false },
+  blue: { cs: ["#e6e8ea", "#c4c9ce", "#9ba2aa"], st: ["#8fb2ea", "#4f7fcf", "#365fa3"], ac: ["#ffe3a0", "#f2b632", "#c48b12"], tpt: false },
+  red: { cs: ["#e6e8ea", "#c4c9ce", "#9ba2aa"], st: ["#f39a8f", "#dc4f43", "#a8362e"], ac: ["#ffd9d4", "#ffffff", "#e8e2d8"], tpt: false },
+};
+
+function applyVariant(v) {
+  const p = VARIANTS[v];
+  const r = document.documentElement.style;
+  p.cs.forEach((c, i) => r.setProperty("--cs" + i, c));
+  p.st.forEach((c, i) => r.setProperty("--st" + i, c));
+  p.ac.forEach((c, i) => r.setProperty("--ac" + i, c));
+  for (const id of ["tptTop", "tptInset"]) {
+    const n = document.getElementById(id);
+    const src = document.getElementById(id === "tptTop" ? "caseTop" : "insetTop");
+    n.setAttribute("d", p.tpt ? src.getAttribute("d") : "");
+  }
+}
+
+function ledger() {
+  const d = dayOf();
+  const a = ACTIVITIES[inputs.act];
+  ghostH = d.steady;
+  const f = (v) => (Math.abs(v) < 0.05 ? "0" : (v > 0 ? "+" : "−") + Math.abs(v).toFixed(1));
+  $("#actOut").textContent = inputs.steps.toLocaleString("en-US") + " steps" + (a.motion ? " + " + a.moves : " a day");
+  $("#actWhy").textContent = a.motion
+    ? `${a.name}: ${a.why}. That winds like about ${(Math.round(d.stepEquiv / 100) * 100).toLocaleString("en-US")} steps of plain walking.`
+    : "Drag the slider for a day of plain walking, or pick an activity.";
+  $("#ledger").innerHTML = `
+    <span class="chip"><b>${Math.round(d.turns).toLocaleString("en-US")}</b> winding rotor turns${a.motion ? ` (${Math.round(d.stepTurns).toLocaleString("en-US")} from steps + ${Math.round(d.motionTurns).toLocaleString("en-US")} from ${a.label})` : ""} <i class="src est">est.</i></span>
+    <span class="chip">wound <b>${f(d.gainH)} h</b></span>
+    <span class="chip">used <b>−24.0 h</b></span>
+    <span class="chip ${d.netH < 0 ? "bad" : "good"}">net <b>${f(d.netH)} h</b> a day</span>
+    <span class="chip">${d.stoppedAt != null ? `stops after <b>${(d.stoppedAt / 24).toFixed(1)} days</b>` : `keeps going: <b>${d.steady.toFixed(0)} h</b> left at bedtime`}</span>
+    <span class="chip">break-even ≈ <b>${d.breakEven.toLocaleString("en-US")}</b> steps <i class="src est">est.</i></span>`;
+  // a week, hour by hour
+  const sp = $("#week");
+  const w = 300;
+  const h = 64;
+  const pts = d.trace.map((r, i) => `${r1((i / (d.trace.length - 1)) * w)},${r1(h - (r / 50) * h)}`);
+  let nights = "";
+  for (let k = 0; k < 7; k++) nights += `<rect x="${r1(((k * 24 + 16) / 167) * w)}" y="0" width="${r1((8 / 167) * w)}" height="${h}" class="night"/>`;
+  sp.innerHTML = `${nights}<polyline points="0,${h} ${pts.join(" ")} ${w},${h}" class="wkFill"/><polyline points="${pts.join(" ")}" class="wkLine"/><line x1="0" y1="${h}" x2="${w}" y2="${h}" class="wkAxis"/>`;
+  const every = a.motion ? `${a.name} every day: s` : "S";
+  $("#weekCap").textContent = d.stoppedAt != null ? `${every}tarting full, it stops on day ${Math.ceil(d.stoppedAt / 24)}.` : `${every}tarting full, it never stops. Grey bands are nights on the nightstand.`;
+}
+
+// ---------- loop ----------
+let last = null;
+let visible = true;
+let manualClock = false;
+function frame(now) {
+  if (!manualClock) {
+    if (last == null) last = now;
+    const speed = window.__driveSpeed || 1;
+    const dt = Math.min(0.05, ((now - last) / 1000) * 1);
+    last = now;
+    if (visible) draw(advance(dt * (speed === 1 ? 1 : 1)));
+  }
+  requestAnimationFrame(frame);
+}
+
+window.__rm = {
+  // test hooks: drive the page on a fixed clock
+  manual(on = true) {
+    manualClock = on;
+    last = null;
+  },
+  advance(ms, sub = 1000 / 60) {
+    let left = ms / 1000;
+    let R = read(S);
+    while (left > 1e-9) {
+      const d = Math.min(left, sub / 1000);
+      R = advance(d);
+      left -= d;
+    }
+    draw(R);
+    return { step: cur, t: tStep, reserveH: R.reserveH, beats: R.beats, date: R.date, hh: R.hh, mm: R.mm, fn: S.fn, speed: V.speedShown, rotor: R.rotorDeg };
+  },
+  start(i) {
+    if (i === next && cur < 0) startStep(i);
+  },
+  get state() {
+    return { cur, next, tStep, S, V };
+  },
+  reset,
+  model: { read, step, dayModel, SPEC },
+};
+
+buildPage();
+applyVariant("rosegold");
+const io = new IntersectionObserver((es) => (visible = es[0].isIntersecting));
+io.observe($("#fig"));
+requestAnimationFrame(frame);
+
+</script>
+</body>
+</html>
