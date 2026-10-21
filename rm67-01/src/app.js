@@ -356,6 +356,27 @@ function startStep(i) {
   setHint(typeof h === "function" ? h() : h);
 }
 
+// Any step, any time: the steps before it are replayed silently on the model,
+// so the watch arrives in the state that step expects (on the wrist, wound, set).
+function jumpTo(i) {
+  if (i === next && cur < 0) {
+    startStep(i);
+    return;
+  }
+  const keepAuto = autoWait;
+  reset();
+  for (let k = 0; k < i; k++) {
+    startStep(k);
+    let guard = 0;
+    while (cur === k && guard++ < 5000) advance(1 / 30);
+  }
+  V.armRot = 0;
+  V.dateShown = read(S).date;
+  V.dateRoll = 0;
+  autoWait = keepAuto;
+  startStep(i);
+}
+
 function finishStep() {
   const done = STEPS[cur].id;
   cur = -1;
@@ -387,6 +408,7 @@ function grab() {
     "rotor", "rotorLow", "rotorBlur", "barrelDrum", "ratchet", "spring", "click", "oneway", "reduce", "centre", "third",
     "fourth", "esc", "pallet", "balance", "hair", "tickHand", "tickFlash", "resNeedle", "resGhost", "resArc", "resText",
     "beatText", "speedG", "speedT", "readout", "watchShade", "hzText", "insetG", "insetSnd", "incapG", "flipCap",
+    "fRatchet", "fFourth", "fEsc", "fBalance", "fHair",
   ]) el[id] = document.getElementById(id);
   el.snd = {};
   for (const k of ["whirr", "click", "tick", "clack", "zip"]) el.snd[k] = document.getElementById("snd-" + k);
@@ -473,6 +495,12 @@ function draw(R) {
   tr(el.balance, `rotate(${r3(bal)})`);
   el.hair.setAttribute("d", hairPath(bal));
   tr(el.pallet, `rotate(${r3(9 * Math.tanh(bal / 25))})`);
+  // the same parts seen through the dial from the front turn the other way round
+  tr(el.fRatchet, `rotate(${r3(-R.ratchetDeg)})`);
+  tr(el.fFourth, `rotate(${r3(-(vr / 60) * 360)})`);
+  tr(el.fEsc, `rotate(${r3(escAngle(vr))})`);
+  tr(el.fBalance, `rotate(${r3(-bal)})`);
+  el.fHair.setAttribute("d", hairPath(-bal));
   // gauges
   const fr = Math.max(0, Math.min(1, R.reserveFrac));
   tr(el.resNeedle, `translate(${GA.x} ${GA.y}) rotate(${r3(-180 + 180 * fr)})`);
@@ -545,7 +573,7 @@ function renderButtons() {
   list.querySelectorAll("button").forEach((b, i) => {
     const state = i === cur ? "running" : i < next ? "done" : i === next && cur < 0 ? "next" : "later";
     b.dataset.state = state;
-    b.disabled = !(state === "next" && mode === "manual" && !showMe);
+    b.disabled = false;
     b.classList.toggle("pulse", state === "next" && mode === "manual" && !showMe);
   });
   document.querySelectorAll(".mode button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.mode === mode)));
@@ -593,6 +621,9 @@ function buildPage() {
   mark("rotorTop", "rotorLit");
   for (const id of ["third", "fourth", "centre", "esc"]) mark(document.getElementById(id).parentNode, "trainLit");
   mark("balanceG", "balanceLit");
+  mark("fBalanceG", "balanceLit");
+  mark("fTrainG", "trainLit");
+  mark("fBarrelG", "barrelLit");
   mark(document.getElementById("pallet").parentNode, "balanceLit");
   mark(document.getElementById("barrelDrum").parentNode, "barrelLit");
   mark("fnDial", "fnLit");
@@ -613,9 +644,8 @@ function buildPage() {
   list.innerHTML = STEPS.map((s, i) => `<li><button type="button" data-i="${i}"><span class="n">${i + 1}</span><span class="l">${s.label}</span></button></li>`).join("");
   list.addEventListener("click", (e) => {
     const b = e.target.closest("button");
-    if (!b || b.disabled) return;
-    const i = +b.dataset.i;
-    if (i === next && cur < 0) startStep(i);
+    if (!b) return;
+    jumpTo(+b.dataset.i);
   });
   document.querySelectorAll(".mode button").forEach((b) =>
     b.addEventListener("click", () => {

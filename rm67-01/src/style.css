@@ -36,8 +36,9 @@ h1 { margin: 2px 0 0; font-weight: 400; font-size: clamp(24px, 3.2vw, 38px); lin
 }
 .steps .n { flex: none; width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--ink); display: grid; place-items: center; background: var(--paper); font-size: 17px; }
 .steps button:disabled { cursor: default; }
-.steps button[data-state="later"] { opacity: .45; }
-.steps button[data-state="done"] { opacity: .38; box-shadow: none; }
+.steps button[data-state="later"] { opacity: .62; }
+.steps button:not([data-state="running"]):hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--shade); opacity: 1; }
+.steps button[data-state="done"] { opacity: .5; box-shadow: none; }
 .steps button[data-state="done"] .n { background: var(--ink); color: var(--paper); }
 .steps button[data-state="running"] { background: var(--ui1); color: #fff; border-color: var(--ink); }
 .steps button[data-state="running"] .n { background: #fff; color: var(--ink); }

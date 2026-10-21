@@ -196,19 +196,26 @@ function dialSvg() {
   const b = OPEN.b;
   let out = "";
   out += local(lpath(tonneau(a, b, CASE.n)), "", `fill:${T.plate[1]}`);
-  // the movement through the open-worked dial: barrel, a wheel, skeleton bridges
-  out += circ(-6, -9.5, 5.4, `fill:${T.plate[2]}`, "k");
-  out += circ(-6, -9.5, 3.9, `fill:${T.gold[2]}`, "k");
-  out += circ(-6, -9.5, 1.3, `fill:${T.gold[0]}`, "k");
-  out += circ(-7, 6.5, 4.4, `fill:${T.gold[1]}`, "k");
+  // the movement through the open-worked dial, seen from the front (mirror of the back):
+  // the barrel's ratchet winding, the seconds wheel, the escape wheel and the balance, all live
+  out += `<g id="fBarrelG">`;
+  out += circ(-4.6, -6.2, 4.0, `fill:${T.gold[2]}`, "k");
+  out += wheel("fRatchet", -4.6, -6.2, 3.4, T.steel, 3, 28);
+  out += `</g>`;
+  out += `<g id="fTrainG">`;
+  out += wheel("fFourth", -5.4, 4.6, 2.6, T.gold, 4, 30, circ(0, -1.45, 0.38, "fill:var(--ui1)", "k"));
+  out += wheel("fEsc", -1.9, 7.0, 1.6, T.steel, 0, 20);
+  out += `</g>`;
+  out += `<g id="fBalanceG" transform="translate(2.6 4.6)"><g id="fBalance">`;
+  out += local(lpath(circlePts(0, 0, 2.7, 48)) + lpath(circlePts(0, 0, 2.25, 48).reverse()), "k", `fill:${T.gold[1]};fill-rule:evenodd`);
   for (let k = 0; k < 4; k++) {
-    const t = (k / 4) * Math.PI * 2 + 0.4;
-    out += circ(-7 + 2.6 * Math.cos(t), 6.5 + 2.6 * Math.sin(t), 0.95, `fill:${T.plate[1]}`, "k");
+    const t = (k / 4) * Math.PI * 2 + Math.PI / 4;
+    out += local(`M${r3(0.4 * Math.cos(t))} ${r3(0.4 * Math.sin(t))}L${r3(2.3 * Math.cos(t))} ${r3(2.3 * Math.sin(t))}`, "k thin");
   }
-  out += circ(-7, 6.5, 0.8, `fill:${T.jewel}`, "k");
-  // a bridge: closed shape from the centre toward 7 o'clock
-  out += local(lpath(roundRect(-12.5, -2.2, 2, 2.2, 2.2, 5).map(([x, y]) => [x * 0.95 + y * 0.31, y * 0.95 - x * 0.31])), "k", `fill:${TI[1]}`);
-  out += circ(-9.8, 2.5, 0.75, `fill:${TI[0]}`, "k");
+  out += circ(0, 0, 0.55, `fill:${T.gold[2]}`, "k");
+  out += `</g><g transform="scale(0.62)"><path id="fHair" class="k hair" d=""/></g>`;
+  out += circ(0, 0, 0.5, `fill:${T.jewel}`, "k");
+  out += `</g>`;
   // black flange with a minute track, ticks hanging from its outer edge
   const ci = { a: a - 2.2, b: b - 2.2 };
   out += local(ring(a, b, ci.a, ci.b), "k", "fill:#262b36;fill-rule:evenodd");
