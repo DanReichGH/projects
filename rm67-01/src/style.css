@@ -48,6 +48,9 @@ h1 { margin: 2px 0 0; font-weight: 400; font-size: clamp(24px, 3.2vw, 38px); lin
 .stage { min-width: 0; }
 .hint { margin: 0 0 10px; min-height: 2.7em; font-size: 21px; background: var(--paper2); border: 1.5px solid var(--ink); border-radius: 14px; padding: 8px 14px; box-shadow: 3px 3px 0 var(--shade); }
 .card { position: relative; }
+.flipbtn { position: absolute; top: 1.6%; left: calc(9.6% + 10px); z-index: 2; font: inherit; font-size: 17px; color: var(--ink); background: var(--paper2); border: 1.5px solid var(--ink); border-radius: 999px; padding: 3px 14px; cursor: pointer; box-shadow: 3px 3px 0 var(--shade); }
+.flipbtn:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--shade); }
+.flipbtn[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
 #fig { display: block; width: 100%; height: auto; }
 .readout { position: absolute; left: 22px; bottom: 10px; margin: 0; font-size: 15px; color: #59627c; }
 .big { font-family: Caveat, cursive; font-size: 34px; margin: 6px 0 8px; text-align: center; }
@@ -118,6 +121,7 @@ h1 { margin: 2px 0 0; font-weight: 400; font-size: clamp(24px, 3.2vw, 38px); lin
 #fig .labBg { fill: var(--paper2); stroke: var(--ink); stroke-width: 1.2; }
 #fig .figno { font-family: Caveat, cursive; font-size: 26px; fill: var(--ink); }
 #fig .figtitle { font-family: "Patrick Hand", sans-serif; font-size: 20px; fill: var(--ink); text-anchor: end; }
+#fig .incap.big { font-size: 26px; }
 #fig .incap { font-family: Caveat, cursive; font-size: 22px; fill: #59627c; text-anchor: middle; }
 #fig .plateFace { fill: var(--paper2); stroke: var(--ink); stroke-width: 1.2; }
 #fig .arcBg { fill: none; stroke: #e9e2d3; stroke-width: 10; }
@@ -150,6 +154,7 @@ h1 { margin: 2px 0 0; font-weight: 400; font-size: clamp(24px, 3.2vw, 38px); lin
   .row2, .cards { grid-template-columns: minmax(0, 1fr); }
   .hint { font-size: 18px; }
   .readout { position: static; text-align: right; }
+  .flipbtn { position: static; display: block; margin: 0 0 8px auto; font-size: 15px; }
   .chip { white-space: normal; }
   .sl { grid-template-columns: minmax(0, 1fr) auto; }
   .sl input { grid-column: 1 / -1; grid-row: 2; }

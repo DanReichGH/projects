@@ -58,6 +58,9 @@ h1 { margin: 2px 0 0; font-weight: 400; font-size: clamp(24px, 3.2vw, 38px); lin
 .stage { min-width: 0; }
 .hint { margin: 0 0 10px; min-height: 2.7em; font-size: 21px; background: var(--paper2); border: 1.5px solid var(--ink); border-radius: 14px; padding: 8px 14px; box-shadow: 3px 3px 0 var(--shade); }
 .card { position: relative; }
+.flipbtn { position: absolute; top: 1.6%; left: calc(9.6% + 10px); z-index: 2; font: inherit; font-size: 17px; color: var(--ink); background: var(--paper2); border: 1.5px solid var(--ink); border-radius: 999px; padding: 3px 14px; cursor: pointer; box-shadow: 3px 3px 0 var(--shade); }
+.flipbtn:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--shade); }
+.flipbtn[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
 #fig { display: block; width: 100%; height: auto; }
 .readout { position: absolute; left: 22px; bottom: 10px; margin: 0; font-size: 15px; color: #59627c; }
 .big { font-family: Caveat, cursive; font-size: 34px; margin: 6px 0 8px; text-align: center; }
@@ -128,6 +131,7 @@ h1 { margin: 2px 0 0; font-weight: 400; font-size: clamp(24px, 3.2vw, 38px); lin
 #fig .labBg { fill: var(--paper2); stroke: var(--ink); stroke-width: 1.2; }
 #fig .figno { font-family: Caveat, cursive; font-size: 26px; fill: var(--ink); }
 #fig .figtitle { font-family: "Patrick Hand", sans-serif; font-size: 20px; fill: var(--ink); text-anchor: end; }
+#fig .incap.big { font-size: 26px; }
 #fig .incap { font-family: Caveat, cursive; font-size: 22px; fill: #59627c; text-anchor: middle; }
 #fig .plateFace { fill: var(--paper2); stroke: var(--ink); stroke-width: 1.2; }
 #fig .arcBg { fill: none; stroke: #e9e2d3; stroke-width: 10; }
@@ -160,6 +164,7 @@ h1 { margin: 2px 0 0; font-weight: 400; font-size: clamp(24px, 3.2vw, 38px); lin
   .row2, .cards { grid-template-columns: minmax(0, 1fr); }
   .hint { font-size: 18px; }
   .readout { position: static; text-align: right; }
+  .flipbtn { position: static; display: block; margin: 0 0 8px auto; font-size: 15px; }
   .chip { white-space: normal; }
   .sl { grid-template-columns: minmax(0, 1fr) auto; }
   .sl input { grid-column: 1 / -1; grid-row: 2; }
@@ -187,6 +192,7 @@ h1 { margin: 2px 0 0; font-weight: 400; font-size: clamp(24px, 3.2vw, 38px); lin
   <section class="stage">
     <p id="hint" class="hint" aria-live="polite"></p>
     <div class="card">
+      <button type="button" id="flip" class="flipbtn" aria-pressed="false">↻ Flip the watch over</button>
       <svg id="fig" viewBox="0 0 1000 720" role="img" aria-label="An RM 67-01 on a wrist, and the same watch turned over to show its movement"></svg>
       <p class="readout" id="readout" aria-live="off"></p>
     </div>
@@ -1432,6 +1438,8 @@ const V = {
   lit: "",
   tickFlash: 0,
   lastBeat: 0,
+  flip: 0, // 0 on the wrist, 1 turned over and shown large
+  flipTo: 0,
 };
 let inputs = { steps: 8000, oneWay: true, act: "walk" };
 const motionOf = () => ACTIVITIES[inputs.act]?.motion ?? 0;
@@ -1657,6 +1665,8 @@ let lastRealDt = 0;
 let badgeNow = 1;
 function advance(dt) {
   lastRealDt = dt;
+  // flip at a constant pace (0.9 s end to end); draw eases it in and out
+  V.flip += Math.sign(V.flipTo - V.flip) * Math.min(Math.abs(V.flipTo - V.flip), dt / 0.9);
   let speed = 1;
   let snd = {};
   if (cur >= 0) {
@@ -1745,7 +1755,7 @@ function grab() {
     "armSwing", "armBody", "cushion", "watchG", "strapG", "hourH", "minH", "fnHandR", "dateStrip", "crown",
     "rotor", "rotorLow", "rotorBlur", "barrelDrum", "ratchet", "spring", "click", "oneway", "reduce", "centre", "third",
     "fourth", "esc", "pallet", "balance", "hair", "tickHand", "tickFlash", "resNeedle", "resGhost", "resArc", "resText",
-    "beatText", "speedG", "speedT", "readout", "watchShade", "hzText",
+    "beatText", "speedG", "speedT", "readout", "watchShade", "hzText", "insetG", "insetSnd", "incapG", "flipCap",
   ]) el[id] = document.getElementById(id);
   el.snd = {};
   for (const k of ["whirr", "click", "tick", "clack", "zip"]) el.snd[k] = document.getElementById("snd-" + k);
@@ -1755,8 +1765,30 @@ function grab() {
 const ELBOW = pr(PM, 0, -40, 30); // the swing pivots near the forearm, so the hand stays clear of the inset
 let ghostH = 50;
 
+// Flip: the wrist fades, and the caseback view slides to the middle and grows.
+const FLIP = { from: null, to: [468, 362], scale: 1.85 };
+function flipTransform(f) {
+  if (!FLIP.from) {
+    const b = el.insetG.getBBox();
+    FLIP.from = [b.x + b.width / 2, b.y + b.height / 2];
+  }
+  const [x0, y0] = FLIP.from;
+  const cx = x0 + (FLIP.to[0] - x0) * f;
+  const cy = y0 + (FLIP.to[1] - y0) * f;
+  const sc = 1 + (FLIP.scale - 1) * f;
+  return `translate(${r1(cx)} ${r1(cy)}) scale(${r3(sc)}) translate(${r1(-x0)} ${r1(-y0)})`;
+}
+
 function draw(R) {
   const tr = (n, v) => n && n.setAttribute("transform", v);
+  const ff = ease(V.flip);
+  const flipT = flipTransform(ff);
+  tr(el.insetG, flipT);
+  tr(el.insetSnd, flipT);
+  el.armSwing.style.opacity = r3(1 - ease(Math.min(1, ff * 1.6)));
+  el.armSwing.style.visibility = ff > 0.99 ? "hidden" : "visible";
+  el.incapG.style.opacity = r3(1 - ease(Math.min(1, ff * 2)));
+  el.flipCap.style.opacity = r3(ease((ff - 0.5) * 2));
   tr(el.armSwing, `rotate(${r3(V.armRot)} ${r1(ELBOW[0])} ${r1(ELBOW[1])})`);
   const out = V.armOut;
   tr(el.armBody, `translate(${r1(out * 300 * Math.cos(Math.PI / 6))} ${r1(out * 300 * 0.5)})`);
@@ -1904,17 +1936,22 @@ function buildPage() {
     <g id="strapG">${strapSvg()}</g>
     <g id="watchG" data-lit="watchLit">${watchSvg()}</g>
   </g>
-  <g id="insetG">
+  <g id="incapG">
     <text x="${PI_.ox - 236}" y="84" class="incap">the same watch, turned over:</text>
     <text x="${PI_.ox - 236}" y="106" class="incap">through the caseback, rotor lifted</text>
+  </g>
+  <text id="flipCap" x="${W / 2}" y="92" class="incap big" style="opacity:0">flipped over: the back of the watch, rotor lifted</text>
+  <g id="insetG">
     ${insetSvg()}
   </g>
   ${gaugesSvg()}
   </g><g class="figlab"><rect x="14" y="14" width="78" height="38" rx="12" class="labBg"/><text x="26" y="42" class="figno">Fig. 1</text></g><text x="${W - 26}" y="40" class="figtitle">RM 67-01 · caliber CRMA6</text><g id="speedG" style="opacity:0"><rect x="${W / 2 - 52}" y="20" width="104" height="34" rx="17" class="badge"/><text id="speedT" x="${W / 2}" y="43" class="badgeT">×1</text></g>
+  <g id="insetSnd">
   ${soundWord("whirr", "whirr", PI_.ox - 196, 214, -8)}
   ${soundWord("zip", "zzzip… slips", PI_.ox - 200, 214, -8)}
   ${soundWord("click", "click-click", PI_.ox + 150, 150, 6)}
   ${soundWord("tick", "tick-tick-tick-tick", PI_.ox + 60, 420, -4)}
+  </g>
   ${soundWord("clack", "clack!", 486, 150, -6)}
   `;
   // highlight groups on the movement
@@ -1959,6 +1996,12 @@ function buildPage() {
       renderButtons();
     }),
   );
+  const flipBtn = $("#flip");
+  flipBtn.addEventListener("click", () => {
+    V.flipTo = V.flipTo ? 0 : 1;
+    flipBtn.setAttribute("aria-pressed", String(!!V.flipTo));
+    flipBtn.textContent = V.flipTo ? "↺ Back on the wrist" : "↻ Flip the watch over";
+  });
   $("#restart").addEventListener("click", (e) => {
     e.preventDefault();
     showMe = false;
