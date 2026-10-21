@@ -80,9 +80,13 @@ h1 { margin: 2px 0 0; font-weight: 400; font-size: clamp(24px, 3.2vw, 38px); lin
 .sw { font: inherit; font-size: 15px; display: inline-flex; align-items: center; gap: 6px; border: 1.2px solid var(--ink); background: var(--paper); border-radius: 999px; padding: 3px 10px 3px 4px; cursor: pointer; color: var(--ink); }
 .sw i { width: 22px; height: 22px; border-radius: 50%; border: 1.2px solid var(--ink); background: linear-gradient(135deg, var(--a) 55%, var(--b) 55%); }
 .sw[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.acts { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 8px; }
+.acts > span { margin-right: 4px; }
+.act { font: inherit; font-size: 15px; border: 1.2px solid var(--ink); background: var(--paper); color: var(--ink); border-radius: 999px; padding: 2px 12px; cursor: pointer; }
+.act[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
 .sl { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; }
 .sl input { width: 100%; accent-color: var(--ui1); }
-.sl output { font-size: 16px; min-width: 9.5em; text-align: right; }
+.sl output { font-size: 16px; min-width: 12em; text-align: right; }
 .wind { border: 0; padding: 0; margin: 8px 0; display: flex; flex-wrap: wrap; gap: 4px 16px; }
 .wind legend { float: left; margin-right: 10px; }
 .week { width: 100%; height: 64px; margin-top: 8px; display: block; }
@@ -219,7 +223,17 @@ h1 { margin: 2px 0 0; font-weight: 400; font-size: clamp(24px, 3.2vw, 38px); lin
       </div>
       <div class="panel">
         <h2>Break it</h2>
-        <label class="sl"><span>Wrist activity</span><input id="act" type="range" min="0" max="10000" step="250" value="8000"><output id="actOut"></output></label>
+        <div class="acts" role="group" aria-label="Wrist activity">
+          <span>Wrist activity</span>
+          <button type="button" class="act" data-act="walk">Just walking</button>
+          <button type="button" class="act" data-act="golf">Golf</button>
+          <button type="button" class="act" data-act="skiing">Skiing</button>
+          <button type="button" class="act" data-act="tennis">Tennis</button>
+          <button type="button" class="act" data-act="sailing">Sailing</button>
+          <button type="button" class="act" data-act="racing">Racing cars</button>
+        </div>
+        <label class="sl"><span>Steps</span><input id="act" type="range" min="0" max="15000" step="250" value="8000"><output id="actOut"></output></label>
+        <p class="small" id="actWhy"></p>
         <fieldset class="wind"><legend>Winding</legend>
           <label><input type="radio" name="wind" value="one" checked> OneWay (the real CRMA6)</label>
           <label><input type="radio" name="wind" value="both"> Both ways (what-if)</label>
@@ -244,7 +258,7 @@ h1 { margin: 2px 0 0; font-weight: 400; font-size: clamp(24px, 3.2vw, 38px); lin
         <li><b>RM:</b> Richard Mille's RM 67-01 / CRMA6 specification: 38.70 × 47.52 × 7.75 mm case, 29.10 × 31.25 × 3.60 mm movement, 28,800 vph, about 50 h (±10%), 25 jewels, CuBe balance at 7.5 mg·cm² with a 50° lift angle, platinum rotor with OneWay winding on ceramic ball bearings, function hand at 2 o'clock showing W · D · H, semi-instantaneous date in a vertical aperture at 5 o'clock, grade 5 titanium spline screws.</li>
         <li><b>Corrected from the brief:</b> the selector reads W · D · H (there is no N). RM publishes no variable-geometry rotor or adjustable ribs for the CRMA6 (that idea belongs to other RM calibers), so the rib step and slider became OneWay against a both-ways what-if. The RM 67-01 has no seconds hand; the fourth wheel, which turns once a minute, carries a marker dot instead.</li>
         <li><b>std.:</b> 20-tooth escape wheel and the 280° → 170° amplitude curve are typical of a Swiss lever movement; RM doesn't publish them for the CRMA6.</li>
-        <li><b>est.:</b> 1,000 rotor turns for a full wind, 6.5 barrel turns, 0.12 winding turns per step, 16 h a day on the wrist, and the both-ways × 1.6 factor are estimates chosen to be plausible. They set how fast things wind, not the timekeeping.</li>
+        <li><b>est.:</b> 1,000 rotor turns for a full wind, 6.5 barrel turns, 0.12 winding turns per step, 16 h a day on the wrist, each activity's steps and extra wrist-motion turns (golf 12,000 steps + 60 turns from swings, skiing 6,000 + 250, tennis 9,000 + 200, sailing 4,000 + 250, racing cars 3,000 + 40), and the both-ways × 1.6 factor are estimates chosen to be plausible. They set how fast things wind, not the timekeeping.</li>
         <li><b>Drawn, not measured:</b> the layout of the wheels in the movement, the number of bezel screws, and the strap and dial details follow the watch's look, not a technical drawing.</li>
       </ul>
     </details>
@@ -278,6 +292,17 @@ const SPEC = {
   turnsPerStep: { v: 0.12, unit: "turns", src: "est", note: "winding rotor turns per walking step" },
   bothWays: { v: 1.6, unit: "×", src: "est", note: "what-if: a rotor that winds both ways" },
   wornH: { v: 16, unit: "h", src: "est", note: "hours a day on the wrist" },
+};
+
+// A day of each activity: steps walked, plus winding rotor turns from wrist motion
+// that isn't walking (swings, strokes, a rolling deck). All estimates (src "est").
+const ACTIVITIES = {
+  walk: { name: "Just walking", steps: 8000, motion: 0, moves: "" },
+  golf: { label: "swings", name: "Golf", steps: 12000, motion: 60, moves: "~90 full swings", why: "walking 18 holes, and every swing whips the rotor round" },
+  skiing: { label: "poles and turns", name: "Skiing", steps: 6000, motion: 250, moves: "pole plants, turns, chairlift bumps", why: "few steps, but poles and turns rock the wrist all day" },
+  tennis: { label: "strokes", name: "Tennis", steps: 9000, motion: 200, moves: "a few hundred strokes", why: "running between shots, and each stroke snaps the wrist" },
+  sailing: { label: "boat roll", name: "Sailing", steps: 4000, motion: 250, moves: "all-day boat roll, winching", why: "hardly any walking, but the deck rolls the rotor for hours" },
+  racing: { label: "wheel vibration", name: "Racing cars", steps: 3000, motion: 40, moves: "hands steady on the wheel", why: "sitting still with hands on the wheel; buzzing vibration barely swings a rotor" },
 };
 
 const HZ = SPEC.vph.v / 3600 / 2; // 28,800 vph = 8 beats/s = 4 full swings/s
@@ -408,14 +433,18 @@ function escAngle(run) {
 }
 
 // A day of wear, averaged: steps → rotor turns → hours of reserve.
-function dayModel({ steps, oneWay = true, startH = SPEC.reserveH.v, days = 7 }) {
-  const turns = steps * SPEC.turnsPerStep.v * (oneWay ? 1 : SPEC.bothWays.v);
+function dayModel({ steps, motion = 0, oneWay = true, startH = SPEC.reserveH.v, days = 7 }) {
+  const factor = oneWay ? 1 : SPEC.bothWays.v;
+  const stepTurns = steps * SPEC.turnsPerStep.v * factor;
+  const motionTurns = motion * factor;
+  const turns = stepTurns + motionTurns;
   const gainH = (turns / SPEC.rotorTurnsFull.v) * SPEC.reserveH.v;
   const worn = SPEC.wornH.v;
   const trace = [];
   let r = startH;
   let stoppedAt = null;
-  for (let h = 0; h < days * 24; h++) {
+  // run long enough for a slow drain to show; the chart keeps the first `days`
+  for (let h = 0; h < Math.max(days, 60) * 24; h++) {
     const hour = h % 24; // 0..15 on the wrist, 16..23 on the nightstand
     const add = hour < worn ? gainH / worn : 0;
     if (r <= 0 && add === 0 && stoppedAt == null) stoppedAt = h;
@@ -425,8 +454,13 @@ function dayModel({ steps, oneWay = true, startH = SPEC.reserveH.v, days = 7 }) 
   }
   // steady state: reserve on taking it off, once days repeat
   const steady = trace[trace.length - 24 + worn - 1];
+  trace.length = days * 24;
   return {
     steps,
+    stepTurns,
+    motionTurns,
+    // the same winding expressed as plain walking
+    stepEquiv: Math.round(steps + motion / SPEC.turnsPerStep.v),
     turns,
     gainH,
     useH: 24,
@@ -1399,7 +1433,9 @@ const V = {
   tickFlash: 0,
   lastBeat: 0,
 };
-let inputs = { steps: 8000, oneWay: true };
+let inputs = { steps: 8000, oneWay: true, act: "walk" };
+const motionOf = () => ACTIVITIES[inputs.act]?.motion ?? 0;
+const dayOf = () => dayModel({ steps: inputs.steps, motion: motionOf(), oneWay: inputs.oneWay });
 
 const STEPS = [
   {
@@ -1428,7 +1464,12 @@ const STEPS = [
   {
     id: "wind",
     label: "Mainspring tightens",
-    hint: "A whole day on your wrist turns the weight hundreds of times. The spring in its drum coils tighter, like a wind-up toy.",
+    hint: () => {
+      const a = ACTIVITIES[inputs.act];
+      const d = dayOf();
+      const day = inputs.act === "walk" || !a ? "A whole day on your wrist" : `A day of ${a.name.toLowerCase()}`;
+      return `${day} turns the weight about ${Math.round(d.turns).toLocaleString("en-US")} times. The spring in its drum coils tighter, like a wind-up toy.`;
+    },
     dur: () => 10,
     lit: "barrelLit",
     sound: "click",
@@ -1525,13 +1566,13 @@ function runStep(i, t, dt) {
     case "wind": {
       const real = SPEC.wornH.v * 3600;
       speed = speedOf(real, d);
-      const day = dayModel({ steps: inputs.steps, oneWay: inputs.oneWay });
+      const day = dayOf();
       inp.wear = day.gainH / SPEC.wornH.v; // reserve s per worn s
       const e = env(t, d, 0.6);
-      V.spinVis += dt * 2 * Math.PI * 1.4 * e * (inputs.steps > 0 ? 1 : 0);
-      V.blur = 0.55 * e * (inputs.steps > 0 ? 1 : 0);
+      V.spinVis += dt * 2 * Math.PI * 1.4 * e * (dayOf().turns > 0 ? 1 : 0);
+      V.blur = 0.55 * e * (dayOf().turns > 0 ? 1 : 0);
       V.armRot = 1.8 * e * Math.sin(2 * Math.PI * 0.7 * t);
-      snd.click = e * (inputs.steps > 0 ? 1 : 0);
+      snd.click = e * (dayOf().turns > 0 ? 1 : 0);
       break;
     }
     case "train":
@@ -1670,7 +1711,8 @@ function startStep(i) {
   V.clackT = null;
   if (STEPS[i].id === "off") V.offDur = 12;
   renderButtons();
-  setHint(STEPS[i].hint);
+  const h = STEPS[i].hint;
+  setHint(typeof h === "function" ? h() : h);
 }
 
 function finishStep() {
@@ -1944,7 +1986,21 @@ function buildPage() {
     inputs.oneWay = document.querySelector("input[name=wind]:checked").value === "one";
     ledger();
   };
-  act.addEventListener("input", upd);
+  act.addEventListener("input", () => {
+    inputs.act = "walk";
+    markAct();
+    upd();
+  });
+  const markAct = () => document.querySelectorAll(".act").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.act === inputs.act)));
+  document.querySelectorAll(".act").forEach((b) =>
+    b.addEventListener("click", () => {
+      inputs.act = b.dataset.act;
+      act.value = ACTIVITIES[inputs.act].steps;
+      markAct();
+      upd();
+    }),
+  );
+  markAct();
   wind.forEach((w) => w.addEventListener("change", upd));
   upd();
   try {
@@ -1981,12 +2037,16 @@ function applyVariant(v) {
 }
 
 function ledger() {
-  const d = dayModel({ steps: inputs.steps, oneWay: inputs.oneWay });
+  const d = dayOf();
+  const a = ACTIVITIES[inputs.act];
   ghostH = d.steady;
   const f = (v) => (Math.abs(v) < 0.05 ? "0" : (v > 0 ? "+" : "−") + Math.abs(v).toFixed(1));
-  $("#actOut").textContent = inputs.steps.toLocaleString("en-US") + " steps a day";
+  $("#actOut").textContent = inputs.steps.toLocaleString("en-US") + " steps" + (a.motion ? " + " + a.moves : " a day");
+  $("#actWhy").textContent = a.motion
+    ? `${a.name}: ${a.why}. That winds like about ${(Math.round(d.stepEquiv / 100) * 100).toLocaleString("en-US")} steps of plain walking.`
+    : "Drag the slider for a day of plain walking, or pick an activity.";
   $("#ledger").innerHTML = `
-    <span class="chip"><b>${Math.round(d.turns).toLocaleString("en-US")}</b> winding rotor turns <i class="src est">est.</i></span>
+    <span class="chip"><b>${Math.round(d.turns).toLocaleString("en-US")}</b> winding rotor turns${a.motion ? ` (${Math.round(d.stepTurns).toLocaleString("en-US")} from steps + ${Math.round(d.motionTurns).toLocaleString("en-US")} from ${a.label})` : ""} <i class="src est">est.</i></span>
     <span class="chip">wound <b>${f(d.gainH)} h</b></span>
     <span class="chip">used <b>−24.0 h</b></span>
     <span class="chip ${d.netH < 0 ? "bad" : "good"}">net <b>${f(d.netH)} h</b> a day</span>
@@ -2000,7 +2060,8 @@ function ledger() {
   let nights = "";
   for (let k = 0; k < 7; k++) nights += `<rect x="${r1(((k * 24 + 16) / 167) * w)}" y="0" width="${r1((8 / 167) * w)}" height="${h}" class="night"/>`;
   sp.innerHTML = `${nights}<polyline points="0,${h} ${pts.join(" ")} ${w},${h}" class="wkFill"/><polyline points="${pts.join(" ")}" class="wkLine"/><line x1="0" y1="${h}" x2="${w}" y2="${h}" class="wkAxis"/>`;
-  $("#weekCap").textContent = d.stoppedAt != null ? `Starting full, it stops on day ${Math.ceil(d.stoppedAt / 24)}.` : `Starting full, it never stops. Grey bands are nights on the nightstand.`;
+  const every = a.motion ? `${a.name} every day: s` : "S";
+  $("#weekCap").textContent = d.stoppedAt != null ? `${every}tarting full, it stops on day ${Math.ceil(d.stoppedAt / 24)}.` : `${every}tarting full, it never stops. Grey bands are nights on the nightstand.`;
 }
 
 // ---------- loop ----------

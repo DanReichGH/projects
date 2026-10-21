@@ -70,9 +70,13 @@ h1 { margin: 2px 0 0; font-weight: 400; font-size: clamp(24px, 3.2vw, 38px); lin
 .sw { font: inherit; font-size: 15px; display: inline-flex; align-items: center; gap: 6px; border: 1.2px solid var(--ink); background: var(--paper); border-radius: 999px; padding: 3px 10px 3px 4px; cursor: pointer; color: var(--ink); }
 .sw i { width: 22px; height: 22px; border-radius: 50%; border: 1.2px solid var(--ink); background: linear-gradient(135deg, var(--a) 55%, var(--b) 55%); }
 .sw[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.acts { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 8px; }
+.acts > span { margin-right: 4px; }
+.act { font: inherit; font-size: 15px; border: 1.2px solid var(--ink); background: var(--paper); color: var(--ink); border-radius: 999px; padding: 2px 12px; cursor: pointer; }
+.act[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
 .sl { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; }
 .sl input { width: 100%; accent-color: var(--ui1); }
-.sl output { font-size: 16px; min-width: 9.5em; text-align: right; }
+.sl output { font-size: 16px; min-width: 12em; text-align: right; }
 .wind { border: 0; padding: 0; margin: 8px 0; display: flex; flex-wrap: wrap; gap: 4px 16px; }
 .wind legend { float: left; margin-right: 10px; }
 .week { width: 100%; height: 64px; margin-top: 8px; display: block; }

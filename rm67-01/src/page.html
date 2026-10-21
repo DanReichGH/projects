@@ -63,7 +63,17 @@
       </div>
       <div class="panel">
         <h2>Break it</h2>
-        <label class="sl"><span>Wrist activity</span><input id="act" type="range" min="0" max="10000" step="250" value="8000"><output id="actOut"></output></label>
+        <div class="acts" role="group" aria-label="Wrist activity">
+          <span>Wrist activity</span>
+          <button type="button" class="act" data-act="walk">Just walking</button>
+          <button type="button" class="act" data-act="golf">Golf</button>
+          <button type="button" class="act" data-act="skiing">Skiing</button>
+          <button type="button" class="act" data-act="tennis">Tennis</button>
+          <button type="button" class="act" data-act="sailing">Sailing</button>
+          <button type="button" class="act" data-act="racing">Racing cars</button>
+        </div>
+        <label class="sl"><span>Steps</span><input id="act" type="range" min="0" max="15000" step="250" value="8000"><output id="actOut"></output></label>
+        <p class="small" id="actWhy"></p>
         <fieldset class="wind"><legend>Winding</legend>
           <label><input type="radio" name="wind" value="one" checked> OneWay (the real CRMA6)</label>
           <label><input type="radio" name="wind" value="both"> Both ways (what-if)</label>
@@ -88,7 +98,7 @@
         <li><b>RM:</b> Richard Mille's RM 67-01 / CRMA6 specification: 38.70 × 47.52 × 7.75 mm case, 29.10 × 31.25 × 3.60 mm movement, 28,800 vph, about 50 h (±10%), 25 jewels, CuBe balance at 7.5 mg·cm² with a 50° lift angle, platinum rotor with OneWay winding on ceramic ball bearings, function hand at 2 o'clock showing W · D · H, semi-instantaneous date in a vertical aperture at 5 o'clock, grade 5 titanium spline screws.</li>
         <li><b>Corrected from the brief:</b> the selector reads W · D · H (there is no N). RM publishes no variable-geometry rotor or adjustable ribs for the CRMA6 (that idea belongs to other RM calibers), so the rib step and slider became OneWay against a both-ways what-if. The RM 67-01 has no seconds hand; the fourth wheel, which turns once a minute, carries a marker dot instead.</li>
         <li><b>std.:</b> 20-tooth escape wheel and the 280° → 170° amplitude curve are typical of a Swiss lever movement; RM doesn't publish them for the CRMA6.</li>
-        <li><b>est.:</b> 1,000 rotor turns for a full wind, 6.5 barrel turns, 0.12 winding turns per step, 16 h a day on the wrist, and the both-ways × 1.6 factor are estimates chosen to be plausible. They set how fast things wind, not the timekeeping.</li>
+        <li><b>est.:</b> 1,000 rotor turns for a full wind, 6.5 barrel turns, 0.12 winding turns per step, 16 h a day on the wrist, each activity's steps and extra wrist-motion turns (golf 12,000 steps + 60 turns from swings, skiing 6,000 + 250, tennis 9,000 + 200, sailing 4,000 + 250, racing cars 3,000 + 40), and the both-ways × 1.6 factor are estimates chosen to be plausible. They set how fast things wind, not the timekeeping.</li>
         <li><b>Drawn, not measured:</b> the layout of the wheels in the movement, the number of bezel screws, and the strap and dial details follow the watch's look, not a technical drawing.</li>
       </ul>
     </details>

@@ -27,6 +27,17 @@ export const SPEC = {
   wornH: { v: 16, unit: "h", src: "est", note: "hours a day on the wrist" },
 };
 
+// A day of each activity: steps walked, plus winding rotor turns from wrist motion
+// that isn't walking (swings, strokes, a rolling deck). All estimates (src "est").
+export const ACTIVITIES = {
+  walk: { name: "Just walking", steps: 8000, motion: 0, moves: "" },
+  golf: { label: "swings", name: "Golf", steps: 12000, motion: 60, moves: "~90 full swings", why: "walking 18 holes, and every swing whips the rotor round" },
+  skiing: { label: "poles and turns", name: "Skiing", steps: 6000, motion: 250, moves: "pole plants, turns, chairlift bumps", why: "few steps, but poles and turns rock the wrist all day" },
+  tennis: { label: "strokes", name: "Tennis", steps: 9000, motion: 200, moves: "a few hundred strokes", why: "running between shots, and each stroke snaps the wrist" },
+  sailing: { label: "boat roll", name: "Sailing", steps: 4000, motion: 250, moves: "all-day boat roll, winching", why: "hardly any walking, but the deck rolls the rotor for hours" },
+  racing: { label: "wheel vibration", name: "Racing cars", steps: 3000, motion: 40, moves: "hands steady on the wheel", why: "sitting still with hands on the wheel; buzzing vibration barely swings a rotor" },
+};
+
 export const HZ = SPEC.vph.v / 3600 / 2; // 28,800 vph = 8 beats/s = 4 full swings/s
 export const BEATS_PER_S = SPEC.vph.v / 3600;
 export const FULL_S = SPEC.reserveH.v * 3600;
@@ -155,14 +166,18 @@ export function escAngle(run) {
 }
 
 // A day of wear, averaged: steps → rotor turns → hours of reserve.
-export function dayModel({ steps, oneWay = true, startH = SPEC.reserveH.v, days = 7 }) {
-  const turns = steps * SPEC.turnsPerStep.v * (oneWay ? 1 : SPEC.bothWays.v);
+export function dayModel({ steps, motion = 0, oneWay = true, startH = SPEC.reserveH.v, days = 7 }) {
+  const factor = oneWay ? 1 : SPEC.bothWays.v;
+  const stepTurns = steps * SPEC.turnsPerStep.v * factor;
+  const motionTurns = motion * factor;
+  const turns = stepTurns + motionTurns;
   const gainH = (turns / SPEC.rotorTurnsFull.v) * SPEC.reserveH.v;
   const worn = SPEC.wornH.v;
   const trace = [];
   let r = startH;
   let stoppedAt = null;
-  for (let h = 0; h < days * 24; h++) {
+  // run long enough for a slow drain to show; the chart keeps the first `days`
+  for (let h = 0; h < Math.max(days, 60) * 24; h++) {
     const hour = h % 24; // 0..15 on the wrist, 16..23 on the nightstand
     const add = hour < worn ? gainH / worn : 0;
     if (r <= 0 && add === 0 && stoppedAt == null) stoppedAt = h;
@@ -172,8 +187,13 @@ export function dayModel({ steps, oneWay = true, startH = SPEC.reserveH.v, days 
   }
   // steady state: reserve on taking it off, once days repeat
   const steady = trace[trace.length - 24 + worn - 1];
+  trace.length = days * 24;
   return {
     steps,
+    stepTurns,
+    motionTurns,
+    // the same winding expressed as plain walking
+    stepEquiv: Math.round(steps + motion / SPEC.turnsPerStep.v),
     turns,
     gainH,
     useH: 24,

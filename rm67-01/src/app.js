@@ -70,7 +70,9 @@ const V = {
   tickFlash: 0,
   lastBeat: 0,
 };
-let inputs = { steps: 8000, oneWay: true };
+let inputs = { steps: 8000, oneWay: true, act: "walk" };
+const motionOf = () => ACTIVITIES[inputs.act]?.motion ?? 0;
+const dayOf = () => dayModel({ steps: inputs.steps, motion: motionOf(), oneWay: inputs.oneWay });
 
 const STEPS = [
   {
@@ -99,7 +101,12 @@ const STEPS = [
   {
     id: "wind",
     label: "Mainspring tightens",
-    hint: "A whole day on your wrist turns the weight hundreds of times. The spring in its drum coils tighter, like a wind-up toy.",
+    hint: () => {
+      const a = ACTIVITIES[inputs.act];
+      const d = dayOf();
+      const day = inputs.act === "walk" || !a ? "A whole day on your wrist" : `A day of ${a.name.toLowerCase()}`;
+      return `${day} turns the weight about ${Math.round(d.turns).toLocaleString("en-US")} times. The spring in its drum coils tighter, like a wind-up toy.`;
+    },
     dur: () => 10,
     lit: "barrelLit",
     sound: "click",
@@ -196,13 +203,13 @@ function runStep(i, t, dt) {
     case "wind": {
       const real = SPEC.wornH.v * 3600;
       speed = speedOf(real, d);
-      const day = dayModel({ steps: inputs.steps, oneWay: inputs.oneWay });
+      const day = dayOf();
       inp.wear = day.gainH / SPEC.wornH.v; // reserve s per worn s
       const e = env(t, d, 0.6);
-      V.spinVis += dt * 2 * Math.PI * 1.4 * e * (inputs.steps > 0 ? 1 : 0);
-      V.blur = 0.55 * e * (inputs.steps > 0 ? 1 : 0);
+      V.spinVis += dt * 2 * Math.PI * 1.4 * e * (dayOf().turns > 0 ? 1 : 0);
+      V.blur = 0.55 * e * (dayOf().turns > 0 ? 1 : 0);
       V.armRot = 1.8 * e * Math.sin(2 * Math.PI * 0.7 * t);
-      snd.click = e * (inputs.steps > 0 ? 1 : 0);
+      snd.click = e * (dayOf().turns > 0 ? 1 : 0);
       break;
     }
     case "train":
@@ -341,7 +348,8 @@ function startStep(i) {
   V.clackT = null;
   if (STEPS[i].id === "off") V.offDur = 12;
   renderButtons();
-  setHint(STEPS[i].hint);
+  const h = STEPS[i].hint;
+  setHint(typeof h === "function" ? h() : h);
 }
 
 function finishStep() {
@@ -615,7 +623,21 @@ function buildPage() {
     inputs.oneWay = document.querySelector("input[name=wind]:checked").value === "one";
     ledger();
   };
-  act.addEventListener("input", upd);
+  act.addEventListener("input", () => {
+    inputs.act = "walk";
+    markAct();
+    upd();
+  });
+  const markAct = () => document.querySelectorAll(".act").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.act === inputs.act)));
+  document.querySelectorAll(".act").forEach((b) =>
+    b.addEventListener("click", () => {
+      inputs.act = b.dataset.act;
+      act.value = ACTIVITIES[inputs.act].steps;
+      markAct();
+      upd();
+    }),
+  );
+  markAct();
   wind.forEach((w) => w.addEventListener("change", upd));
   upd();
   try {
@@ -652,12 +674,16 @@ function applyVariant(v) {
 }
 
 function ledger() {
-  const d = dayModel({ steps: inputs.steps, oneWay: inputs.oneWay });
+  const d = dayOf();
+  const a = ACTIVITIES[inputs.act];
   ghostH = d.steady;
   const f = (v) => (Math.abs(v) < 0.05 ? "0" : (v > 0 ? "+" : "−") + Math.abs(v).toFixed(1));
-  $("#actOut").textContent = inputs.steps.toLocaleString("en-US") + " steps a day";
+  $("#actOut").textContent = inputs.steps.toLocaleString("en-US") + " steps" + (a.motion ? " + " + a.moves : " a day");
+  $("#actWhy").textContent = a.motion
+    ? `${a.name}: ${a.why}. That winds like about ${(Math.round(d.stepEquiv / 100) * 100).toLocaleString("en-US")} steps of plain walking.`
+    : "Drag the slider for a day of plain walking, or pick an activity.";
   $("#ledger").innerHTML = `
-    <span class="chip"><b>${Math.round(d.turns).toLocaleString("en-US")}</b> winding rotor turns <i class="src est">est.</i></span>
+    <span class="chip"><b>${Math.round(d.turns).toLocaleString("en-US")}</b> winding rotor turns${a.motion ? ` (${Math.round(d.stepTurns).toLocaleString("en-US")} from steps + ${Math.round(d.motionTurns).toLocaleString("en-US")} from ${a.label})` : ""} <i class="src est">est.</i></span>
     <span class="chip">wound <b>${f(d.gainH)} h</b></span>
     <span class="chip">used <b>−24.0 h</b></span>
     <span class="chip ${d.netH < 0 ? "bad" : "good"}">net <b>${f(d.netH)} h</b> a day</span>
@@ -671,7 +697,8 @@ function ledger() {
   let nights = "";
   for (let k = 0; k < 7; k++) nights += `<rect x="${r1(((k * 24 + 16) / 167) * w)}" y="0" width="${r1((8 / 167) * w)}" height="${h}" class="night"/>`;
   sp.innerHTML = `${nights}<polyline points="0,${h} ${pts.join(" ")} ${w},${h}" class="wkFill"/><polyline points="${pts.join(" ")}" class="wkLine"/><line x1="0" y1="${h}" x2="${w}" y2="${h}" class="wkAxis"/>`;
-  $("#weekCap").textContent = d.stoppedAt != null ? `Starting full, it stops on day ${Math.ceil(d.stoppedAt / 24)}.` : `Starting full, it never stops. Grey bands are nights on the nightstand.`;
+  const every = a.motion ? `${a.name} every day: s` : "S";
+  $("#weekCap").textContent = d.stoppedAt != null ? `${every}tarting full, it stops on day ${Math.ceil(d.stoppedAt / 24)}.` : `${every}tarting full, it never stops. Grey bands are nights on the nightstand.`;
 }
 
 // ---------- loop ----------
