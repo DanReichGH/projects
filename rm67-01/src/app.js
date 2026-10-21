@@ -579,7 +579,7 @@ function buildPage() {
 
   // step buttons
   const list = $("#steps");
-  list.innerHTML = STEPS.map((s, i) => `<li><button type="button" data-i="${i}"><span class="n">${i + 1}</span><span class="l">${s.label}</span></button></li>`).join("");
+  list.innerHTML = STEPS.map((s, i) => `<li><button type="button" data-i="${i}"><span class="n">${String(i + 1).padStart(2, "0")}</span><span class="l">${s.label}</span></button></li>`).join("");
   list.addEventListener("click", (e) => {
     const b = e.target.closest("button");
     if (!b || b.disabled) return;
@@ -606,7 +606,7 @@ function buildPage() {
     showMe = true;
     autoWait = 0.3;
     renderButtons();
-    $("#fig").scrollIntoView({ behavior: "smooth", block: "center" });
+    $("#machine").scrollIntoView({ behavior: "smooth", block: "start" });
   });
   // swatches
   document.querySelectorAll(".sw").forEach((b) =>

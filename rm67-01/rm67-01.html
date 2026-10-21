@@ -4,11 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>RM 67-01 Anatomy</title>
-<meta name="description" content="How a Richard Mille RM 67-01 winds itself and keeps time with no battery: an interactive, hand-inked machine driven by one small model.">
+<meta name="description" content="An independent, interactive explainer of how the RM 67-01 Automatic Extra Flat winds itself and keeps time with no battery. Not affiliated with Richard Mille.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
-<style>:root {
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600&family=Inter:wght@300;400;500;600&family=Caveat:wght@600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>/* Page: a restrained, editorial watchmaking layout. The drawing keeps its own paper. */
+:root {
+  --bg: #ffffff;
+  --bg2: #f4f4f2;
+  --text: #121212;
+  --mute: #6d6d6d;
+  --rule: #e1e1df;
   --paper: #f5f0e5;
   --paper2: #fbf8f1;
   --ink: #1f2c4d;
@@ -18,91 +24,126 @@
   --ac0: #ffffff; --ac1: #dfe3e8; --ac2: #8d95a0;
   --ui0: #ffb3a3; --ui1: #ec5a43; --ui2: #b9402e;
   --blur: rgba(220, 205, 178, 0.55);
+  --cond: "Barlow Condensed", "Arial Narrow", sans-serif;
   color-scheme: light;
 }
 * { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 64px; }
 html, body { margin: 0; }
-body {
-  background: var(--paper);
-  color: var(--ink);
-  font-family: "Patrick Hand", "Comic Sans MS", system-ui, sans-serif;
-  font-size: 18px;
-  line-height: 1.35;
-}
-.top { max-width: 1280px; margin: 0 auto; padding: 22px 24px 0; }
-.kicker { margin: 0; font-family: Caveat, cursive; font-size: 24px; color: #6b7590; }
-h1 { margin: 2px 0 0; font-weight: 400; font-size: clamp(24px, 3.2vw, 38px); line-height: 1.15; }
-.grid { max-width: 1280px; margin: 0 auto; padding: 14px 24px 60px; display: grid; grid-template-columns: 264px minmax(0, 1fr); gap: 22px; align-items: start; }
-.side { position: sticky; top: 14px; }
-.mode { display: inline-flex; border: 1.5px solid var(--ink); border-radius: 999px; overflow: hidden; margin-bottom: 12px; background: var(--paper2); }
-.mode button { font: inherit; border: 0; background: none; color: var(--ink); padding: 6px 16px; cursor: pointer; }
-.mode button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
-.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
-.steps button {
-  width: 100%; display: flex; align-items: center; gap: 10px; text-align: left;
-  font: inherit; font-size: 17px; color: var(--ink); background: var(--paper2);
-  border: 1.5px solid var(--ink); border-radius: 999px; padding: 6px 14px 6px 6px; cursor: pointer;
-  box-shadow: 3px 3px 0 var(--shade); transition: opacity .3s, background .3s, transform .15s;
-}
-.steps .n { flex: none; width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--ink); display: grid; place-items: center; background: var(--paper); font-size: 17px; }
+body { background: var(--bg); color: var(--text); font-family: Inter, system-ui, sans-serif; font-weight: 300; font-size: 16px; line-height: 1.55; }
+b, strong { font-weight: 500; }
+a { color: inherit; }
+.label, .eyebrow, .sech, .bar, .figures dt, .kv span, .specs h3, .panel h3 { font-family: var(--cond); text-transform: uppercase; letter-spacing: .14em; }
+.label { display: block; font-size: 13px; font-weight: 500; color: var(--mute); margin: 0 0 10px; }
+
+/* bar + section nav */
+.bar { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 28px; padding: 0 32px; height: 56px; background: rgba(255,255,255,.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--rule); font-size: 14px; }
+.mark { text-decoration: none; font-weight: 600; font-size: 18px; letter-spacing: .18em; white-space: nowrap; }
+.mark span { font-weight: 400; color: var(--mute); margin-left: 6px; }
+.secnav { display: flex; gap: 22px; margin: 0 auto; }
+.secnav a { text-decoration: none; color: var(--mute); padding: 4px 0; border-bottom: 1px solid transparent; }
+.secnav a:hover { color: var(--text); border-bottom-color: var(--text); }
+.indep { margin: 0; font-size: 12px; color: var(--mute); white-space: nowrap; }
+
+/* hero */
+.hero { max-width: 1280px; margin: 0 auto; padding: 72px 32px 40px; }
+.eyebrow { margin: 0 0 18px; font-size: 14px; font-weight: 500; color: var(--mute); }
+.hero h1 { margin: 0; font-family: var(--cond); font-weight: 500; text-transform: uppercase; letter-spacing: .02em; font-size: clamp(44px, 7vw, 96px); line-height: .95; }
+.lede { max-width: 620px; margin: 26px 0 0; font-size: 18px; color: #3a3a3a; }
+.figures { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 48px 0 0; border-top: 1px solid var(--text); }
+.figures div { padding: 16px 16px 0 0; border-right: 1px solid var(--rule); }
+.figures div + div { padding-left: 16px; }
+.figures div:last-child { border-right: 0; }
+.figures dt { font-size: 12px; color: var(--mute); }
+.figures dd { margin: 4px 0 0; font-family: var(--cond); font-weight: 500; font-size: clamp(30px, 4vw, 48px); line-height: 1; }
+.figures small { font-size: .45em; margin-left: 4px; color: var(--mute); letter-spacing: .1em; }
+
+/* the movement section */
+.grid { max-width: 1280px; margin: 0 auto; padding: 40px 32px 24px; display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 32px; align-items: start; border-top: 1px solid var(--rule); }
+.side { position: sticky; top: 76px; }
+.mode { display: inline-flex; border: 1px solid var(--text); margin-bottom: 18px; }
+.mode button { font: 500 13px/1 var(--cond); text-transform: uppercase; letter-spacing: .14em; border: 0; background: none; color: var(--text); padding: 9px 16px; cursor: pointer; }
+.mode button[aria-pressed="true"] { background: var(--text); color: var(--bg); }
+.steps { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule); }
+.steps li { border-bottom: 1px solid var(--rule); }
+.steps button { width: 100%; display: flex; align-items: baseline; gap: 12px; text-align: left; font: inherit; font-size: 14.5px; color: var(--text); background: none; border: 0; padding: 11px 8px; cursor: pointer; transition: opacity .3s, background .3s, color .3s; }
+.steps .n { flex: none; font-family: var(--cond); font-weight: 500; font-size: 14px; letter-spacing: .08em; color: var(--mute); min-width: 22px; }
 .steps button:disabled { cursor: default; }
-.steps button[data-state="later"] { opacity: .45; }
-.steps button[data-state="done"] { opacity: .38; box-shadow: none; }
-.steps button[data-state="done"] .n { background: var(--ink); color: var(--paper); }
-.steps button[data-state="running"] { background: var(--ui1); color: #fff; border-color: var(--ink); }
-.steps button[data-state="running"] .n { background: #fff; color: var(--ink); }
-.steps button[data-state="next"]:not(:disabled):hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--shade); }
-.steps button.pulse .n { animation: pulse 1.3s ease-in-out infinite; }
-@keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(236, 90, 67, .55); } 50% { box-shadow: 0 0 0 7px rgba(236, 90, 67, 0); } }
-.restart { display: inline-block; margin-top: 14px; color: var(--ink); font-size: 17px; }
+.steps button[data-state="later"] { opacity: .4; }
+.steps button[data-state="done"] { opacity: .4; }
+.steps button[data-state="done"] .n::after { content: " ✓"; }
+.steps button[data-state="running"] { background: var(--text); color: var(--bg); }
+.steps button[data-state="running"] .n { color: var(--bg); }
+.steps button[data-state="next"]:not(:disabled):hover { background: var(--bg2); }
+.steps button.pulse .n { color: var(--ui1); animation: pulse 1.3s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+.restart { display: inline-block; margin-top: 16px; font: 500 13px var(--cond); text-transform: uppercase; letter-spacing: .14em; color: var(--mute); }
 .stage { min-width: 0; }
-.hint { margin: 0 0 10px; min-height: 2.7em; font-size: 21px; background: var(--paper2); border: 1.5px solid var(--ink); border-radius: 14px; padding: 8px 14px; box-shadow: 3px 3px 0 var(--shade); }
+.hint { margin: 0 0 14px; min-height: 3.2em; font-size: 18px; font-weight: 400; padding: 2px 0 2px 16px; border-left: 2px solid var(--text); }
 .card { position: relative; }
 #fig { display: block; width: 100%; height: auto; }
-.readout { position: absolute; left: 22px; bottom: 10px; margin: 0; font-size: 15px; color: #59627c; }
-.big { font-family: Caveat, cursive; font-size: 34px; margin: 6px 0 8px; text-align: center; }
+.readout { position: absolute; left: 22px; bottom: 10px; margin: 0; font-size: 13px; color: #59627c; }
+.big { font-family: var(--cond); font-weight: 500; text-transform: uppercase; letter-spacing: .06em; font-size: clamp(24px, 3vw, 34px); margin: 26px 0 12px; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.chips.facts { margin-top: 6px; }
-.chip { background: var(--paper2); border: 1.2px solid #b9b2a2; border-radius: 999px; padding: 2px 10px; font-size: 15px; white-space: nowrap; }
-.chip.lv { border-color: var(--ink); }
+.chip { background: var(--bg2); border: 1px solid var(--rule); padding: 3px 10px; font-size: 13px; white-space: nowrap; }
+.chip.lv { background: var(--bg); border-color: var(--text); }
 .chip.lv:empty { display: none; }
-.chip.bad { background: #fde3dd; }
-.chip.good { background: #e3f3e6; }
-.src { font-style: normal; font-size: 12px; border-radius: 6px; padding: 0 5px; margin-left: 3px; border: 1px solid; }
+.chip.bad { background: #fbe9e6; border-color: #e7b9b1; }
+.chip.good { background: #e9f3ea; border-color: #b9d7bd; }
+.src { font-style: normal; font: 500 11px var(--cond); letter-spacing: .1em; text-transform: uppercase; padding: 0 5px; margin-left: 6px; border: 1px solid; vertical-align: 1px; }
 .src.rm { color: #2f6a3d; border-color: #9bc4a4; }
 .src.std { color: #6a5a20; border-color: #d1bf7c; }
 .src.est { color: #9b3a2a; border-color: #e3a497; }
-.row2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 16px; margin-top: 16px; }
-.panel { background: var(--paper2); border: 1.5px solid var(--ink); border-radius: 16px; padding: 10px 14px 12px; box-shadow: 3px 3px 0 var(--shade); min-width: 0; }
-.panel h2 { margin: 0 0 6px; font-weight: 400; font-size: 24px; }
-.small { font-size: 14px; color: #5b6480; margin: 6px 0 0; }
-.swatches { display: flex; flex-wrap: wrap; gap: 6px; }
-.sw { font: inherit; font-size: 15px; display: inline-flex; align-items: center; gap: 6px; border: 1.2px solid var(--ink); background: var(--paper); border-radius: 999px; padding: 3px 10px 3px 4px; cursor: pointer; color: var(--ink); }
-.sw i { width: 22px; height: 22px; border-radius: 50%; border: 1.2px solid var(--ink); background: linear-gradient(135deg, var(--a) 55%, var(--b) 55%); }
-.sw[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
-.acts { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 8px; }
-.acts > span { margin-right: 4px; }
-.act { font: inherit; font-size: 15px; border: 1.2px solid var(--ink); background: var(--paper); color: var(--ink); border-radius: 999px; padding: 2px 12px; cursor: pointer; }
-.act[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
-.sl { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; }
-.sl input { width: 100%; accent-color: var(--ui1); }
-.sl output { font-size: 16px; min-width: 12em; text-align: right; }
-.wind { border: 0; padding: 0; margin: 8px 0; display: flex; flex-wrap: wrap; gap: 4px 16px; }
-.wind legend { float: left; margin-right: 10px; }
-.week { width: 100%; height: 64px; margin-top: 8px; display: block; }
-.week .night { fill: #ebe4d6; }
-.week .wkFill { fill: var(--ui0); opacity: .55; }
-.week .wkLine { fill: none; stroke: var(--ink); stroke-width: 1.4; vector-effect: non-scaling-stroke; }
-.week .wkAxis { stroke: var(--ink); stroke-width: 1.2; vector-effect: non-scaling-stroke; }
-.cards { list-style: none; margin: 18px 0 8px; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-.cards li { background: var(--paper2); border: 1.5px solid var(--ink); border-radius: 16px; padding: 10px 14px; box-shadow: 3px 3px 0 var(--shade); }
-.cards .n { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--ink); }
-.cards h3 { display: inline; margin-left: 8px; font-weight: 400; font-size: 21px; }
-.cards p { margin: 6px 0 0; font-size: 16px; }
-.showme { font: inherit; font-size: 19px; background: var(--ink); color: var(--paper); border: 0; border-radius: 999px; padding: 8px 20px; cursor: pointer; box-shadow: 3px 3px 0 var(--shade); }
-.notes { margin-top: 16px; font-size: 15px; }
-.notes summary { cursor: pointer; font-size: 18px; }
-.notes li { margin: 4px 0; }
+.threes { margin-top: 36px; }
+.cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--text); }
+.cards li { padding: 16px 18px 18px 0; }
+.cards li + li { padding-left: 18px; border-left: 1px solid var(--rule); }
+.cards .n { font-family: var(--cond); font-size: 13px; color: var(--mute); letter-spacing: .12em; }
+.cards h3 { margin: 4px 0 0; font-family: var(--cond); font-weight: 500; text-transform: uppercase; letter-spacing: .06em; font-size: 22px; }
+.cards p { margin: 6px 0 0; font-size: 14.5px; color: #3a3a3a; }
+.showme { margin-top: 18px; font: 500 14px/1 var(--cond); text-transform: uppercase; letter-spacing: .16em; background: var(--text); color: var(--bg); border: 0; padding: 14px 24px; cursor: pointer; }
+.showme:hover { background: #333; }
+
+/* specifications */
+.specs, .lab, .notes { max-width: 1280px; margin: 0 auto; padding: 56px 32px 24px; }
+.sech { margin: 0 0 24px; font-size: 15px; font-weight: 500; padding-bottom: 12px; border-bottom: 1px solid var(--text); }
+.spgrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px 40px; }
+.specs h3 { margin: 0 0 6px; font-size: 17px; font-weight: 600; }
+.specs p { margin: 0 0 12px; font-size: 14.5px; color: #3a3a3a; }
+.kv { list-style: none; margin: 0; padding: 0; }
+.kv li { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: baseline; gap: 8px; padding: 7px 0; border-top: 1px solid var(--rule); font-size: 14px; }
+.kv span { font-size: 12px; color: var(--mute); }
+.kv b { text-align: right; }
+
+/* on the wrist */
+.row2 { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 40px; }
+.panel { min-width: 0; }
+.panel h3 { margin: 0 0 14px; font-size: 17px; font-weight: 600; }
+.small { font-size: 13.5px; color: var(--mute); margin: 8px 0 0; }
+.swatches, .acts { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.acts { margin-bottom: 12px; }
+.acts .label { width: 100%; margin-bottom: 2px; }
+.sw, .act { font: inherit; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--rule); background: var(--bg); border-radius: 0; padding: 6px 12px; cursor: pointer; color: var(--text); }
+.sw:hover, .act:hover { border-color: var(--text); }
+.sw i { width: 18px; height: 18px; border-radius: 50%; border: 1px solid #0003; background: linear-gradient(135deg, var(--a) 55%, var(--b) 55%); }
+.sw[aria-pressed="true"], .act[aria-pressed="true"] { background: var(--text); color: var(--bg); border-color: var(--text); }
+.sl { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 14px; align-items: center; }
+.sl .label { margin: 0; }
+.sl input { width: 100%; accent-color: var(--text); }
+.sl output { font-size: 14px; min-width: 12em; text-align: right; }
+.wind { border: 0; padding: 0; margin: 14px 0 10px; display: flex; flex-wrap: wrap; gap: 4px 18px; align-items: center; font-size: 14.5px; }
+.wind legend { float: left; margin: 0 10px 0 0; }
+.week { width: 100%; height: 64px; margin-top: 12px; display: block; }
+.week .night { fill: var(--bg2); }
+.week .wkFill { fill: #d8d8d4; opacity: .7; }
+.week .wkLine { fill: none; stroke: var(--text); stroke-width: 1.4; vector-effect: non-scaling-stroke; }
+.week .wkAxis { stroke: var(--text); stroke-width: 1; vector-effect: non-scaling-stroke; }
+
+/* sources + footer */
+.notes ul { margin: 0; padding-left: 18px; font-size: 14px; color: #3a3a3a; max-width: 900px; }
+.notes li { margin: 6px 0; }
+.foot { max-width: 1280px; margin: 32px auto 0; padding: 22px 32px 40px; border-top: 1px solid var(--rule); font-size: 12.5px; color: var(--mute); }
+.foot p { margin: 0; max-width: 820px; }
 
 /* the drawing */
 #fig .paper { fill: var(--paper); stroke: var(--ink); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
@@ -150,39 +191,73 @@ h1 { margin: 2px 0 0; font-weight: 400; font-size: clamp(24px, 3.2vw, 38px); lin
 #fig [data-lit] { transition: filter .35s; }
 #fig .lit { filter: drop-shadow(0 0 2.2px var(--ui1)) drop-shadow(0 0 0.6px var(--ui1)); }
 
+@media (max-width: 980px) {
+  .secnav, .indep { display: none; }
+  .bar { justify-content: space-between; }
+  .bar::after { content: "Independent explainer"; font-size: 11px; color: var(--mute); letter-spacing: .12em; }
+}
 @media (max-width: 860px) {
-  .grid { grid-template-columns: minmax(0, 1fr); padding: 10px 16px 40px; }
-  .top { padding: 16px 16px 0; }
+  .hero { padding: 40px 16px 24px; }
+  .figures { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .figures div:nth-child(2) { border-right: 0; }
+  .figures div:nth-child(3) { padding-left: 0; }
+  .bar { padding: 0 16px; }
+  .grid { grid-template-columns: minmax(0, 1fr); padding: 24px 16px; gap: 20px; }
   .side { position: static; }
-  .steps { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-  .steps button { font-size: 15px; padding: 4px 8px 4px 4px; }
-  .steps .n { width: 26px; height: 26px; }
-  .row2, .cards { grid-template-columns: minmax(0, 1fr); }
-  .hint { font-size: 18px; }
+  .steps { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 12px; }
+  .steps button { font-size: 13.5px; padding: 9px 4px; }
+  .specs, .lab, .notes { padding: 40px 16px 16px; }
+  .spgrid, .row2 { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .cards { grid-template-columns: minmax(0, 1fr); }
+  .cards li + li { padding-left: 0; border-left: 0; border-top: 1px solid var(--rule); }
+  .hint { font-size: 16px; }
   .readout { position: static; text-align: right; }
   .chip { white-space: normal; }
   .sl { grid-template-columns: minmax(0, 1fr) auto; }
   .sl input { grid-column: 1 / -1; grid-row: 2; }
   .sl output { min-width: 0; }
+  .foot { padding: 20px 16px 32px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .steps button.pulse .n { animation: none; outline: 2px solid var(--ui1); }
+  html { scroll-behavior: auto; }
+  .steps button.pulse .n { animation: none; text-decoration: underline; }
 }
 </style>
 </head>
 <body>
-<header class="top">
-  <p class="kicker">Someone asked me</p>
-  <h1>“How does a Richard Mille RM 67-01 wind itself and keep time with no battery?”</h1>
+<header class="bar">
+  <a class="mark" href="#intro">RM 67-01 <span>Anatomy</span></a>
+  <nav class="secnav" aria-label="Sections">
+    <a href="#intro">Introduction</a>
+    <a href="#machine">The movement</a>
+    <a href="#specs">Specifications</a>
+    <a href="#lab">On the wrist</a>
+    <a href="#sources">Sources</a>
+  </nav>
+  <p class="indep">Independent explainer · not affiliated with Richard Mille</p>
 </header>
-<main class="grid">
+
+<section class="hero" id="intro">
+  <p class="eyebrow">Automatic Extra Flat · Caliber CRMA6</p>
+  <h1>No battery.<br>Fifty hours.<br>7.75 millimetres.</h1>
+  <p class="lede">How does a Richard Mille RM 67-01 wind itself and keep time with no battery? Ten steps, one model, every number sourced.</p>
+  <dl class="figures">
+    <div><dt>Thickness</dt><dd>7.75<small>mm</small></dd></div>
+    <div><dt>Power reserve</dt><dd>≈50<small>h</small></dd></div>
+    <div><dt>Frequency</dt><dd>28,800<small>vph</small></dd></div>
+    <div><dt>Movement</dt><dd>3.60<small>mm</small></dd></div>
+  </dl>
+</section>
+
+<main class="grid" id="machine">
   <aside class="side">
+    <p class="label">The sequence</p>
     <div class="mode" role="group" aria-label="Play mode">
       <button type="button" data-mode="manual" aria-pressed="true">Manual</button>
       <button type="button" data-mode="auto" aria-pressed="false">Auto</button>
     </div>
     <ol id="steps" class="steps"></ol>
-    <a href="#" id="restart" class="restart">↺ Start over</a>
+    <a href="#" id="restart" class="restart">Start over</a>
   </aside>
   <section class="stage">
     <p id="hint" class="hint" aria-live="polite"></p>
@@ -194,76 +269,90 @@ h1 { margin: 2px 0 0; font-weight: 400; font-size: clamp(24px, 3.2vw, 38px); lin
     <div id="live" class="chips live">
       <span class="chip lv" data-k="reserve"></span><span class="chip lv" data-k="beats"></span><span class="chip lv" data-k="watch"></span><span class="chip lv" data-k="world"></span><span class="chip lv" data-k="turns"></span><span class="chip lv" data-k="amp"></span><span class="chip lv" data-k="fn"></span>
     </div>
-    <div class="chips facts">
-      <span class="chip">28,800 vph = <b>4 Hz</b> = <b>8 ticks/s</b> <i class="src rm">RM</i></span>
-      <span class="chip">power reserve <b>≈ 50 h</b> (±10%) <i class="src rm">RM</i></span>
-      <span class="chip">movement <b>3.60 mm</b> in a <b>7.75 mm</b> case <i class="src rm">RM</i></span>
-      <span class="chip">case <b>38.70 × 47.52 mm</b> <i class="src rm">RM</i></span>
-      <span class="chip">CRMA6 <b>29.10 × 31.25 mm</b> · 25 jewels <i class="src rm">RM</i></span>
-      <span class="chip">balance 7.5 mg·cm², lift 50° <i class="src rm">RM</i></span>
-      <span class="chip">platinum rotor, <b>OneWay</b> winding <i class="src rm">RM</i></span>
-      <span class="chip">escape wheel 20 teeth <i class="src std">std.</i></span>
-      <span class="chip">amplitude 280° → 170° <i class="src std">std.</i></span>
-      <span class="chip">1,000 rotor turns to fill <i class="src est">est.</i></span>
-      <span class="chip">6.5 barrel turns to fill <i class="src est">est.</i></span>
+    <div class="threes">
+      <p class="label">In three movements</p>
+      <ol class="cards">
+        <li><span class="n">01</span><h3>Wrist → rotor</h3><p>A heavy platinum weight hangs off-centre. Your arm moves; the weight swings and turns.</p></li>
+        <li><span class="n">02</span><h3>Rotor → spring</h3><p>Turning one way only (OneWay), it winds the mainspring through a row of small wheels.</p></li>
+        <li><span class="n">03</span><h3>Spring → tick</h3><p>The spring lets go slowly. The balance swings 8 times a second, letting the gears move one notch at a time.</p></li>
+      </ol>
+      <button type="button" id="showme" class="showme">Play the full sequence</button>
     </div>
-
-    <div class="row2">
-      <div class="panel">
-        <h2>Colour</h2>
-        <div class="swatches">
-          <button type="button" class="sw" data-v="rosegold" aria-pressed="true"><i style="--a:#e3ae8e;--b:#4a7bcf"></i>Rose gold</button>
-          <button type="button" class="sw" data-v="titanium" aria-pressed="false"><i style="--a:#3f4352;--b:#ec5a43"></i>Titanium</button>
-          <button type="button" class="sw" data-v="carbon" aria-pressed="false"><i style="--a:#41444c;--b:#3fbf8f"></i>Carbon TPT</button>
-          <button type="button" class="sw" data-v="white" aria-pressed="false"><i style="--a:#ebe7de;--b:#3f74d8"></i>White</button>
-          <button type="button" class="sw" data-v="blue" aria-pressed="false"><i style="--a:#4f7fcf;--b:#f2b632"></i>Blue</button>
-          <button type="button" class="sw" data-v="red" aria-pressed="false"><i style="--a:#dc4f43;--b:#ffffff"></i>Red</button>
-        </div>
-        <p class="small">Recolours the case, the strap and the hands; Carbon TPT also adds its layered pattern. Colour pairings are illustrative, not RM's catalogue.</p>
-      </div>
-      <div class="panel">
-        <h2>Break it</h2>
-        <div class="acts" role="group" aria-label="Wrist activity">
-          <span>Wrist activity</span>
-          <button type="button" class="act" data-act="walk">Just walking</button>
-          <button type="button" class="act" data-act="golf">Golf</button>
-          <button type="button" class="act" data-act="skiing">Skiing</button>
-          <button type="button" class="act" data-act="tennis">Tennis</button>
-          <button type="button" class="act" data-act="sailing">Sailing</button>
-          <button type="button" class="act" data-act="racing">Racing cars</button>
-        </div>
-        <label class="sl"><span>Steps</span><input id="act" type="range" min="0" max="15000" step="250" value="8000"><output id="actOut"></output></label>
-        <p class="small" id="actWhy"></p>
-        <fieldset class="wind"><legend>Winding</legend>
-          <label><input type="radio" name="wind" value="one" checked> OneWay (the real CRMA6)</label>
-          <label><input type="radio" name="wind" value="both"> Both ways (what-if)</label>
-        </fieldset>
-        <div id="ledger" class="chips"></div>
-        <svg id="week" viewBox="0 0 300 64" class="week" aria-label="Power reserve over a week"></svg>
-        <p class="small" id="weekCap"></p>
-        <p class="small">Step 4 winds by this ledger, and the hollow needle on the gauge shows the reserve left at bedtime once the days repeat.</p>
-      </div>
-    </div>
-
-    <ol class="cards">
-      <li><span class="n">1</span><h3>Wrist → rotor</h3><p>A heavy platinum weight hangs off-centre. Your arm moves; the weight swings and turns.</p></li>
-      <li><span class="n">2</span><h3>Rotor → spring</h3><p>Turning one way only (OneWay), it winds the mainspring through a row of small wheels.</p></li>
-      <li><span class="n">3</span><h3>Spring → tick</h3><p>The spring lets go slowly. The balance swings 8 times a second, letting the gears move one notch at a time.</p></li>
-    </ol>
-    <button type="button" id="showme" class="showme">▶ Show me</button>
-
-    <details class="notes">
-      <summary>Where the numbers come from</summary>
-      <ul>
-        <li><b>RM:</b> Richard Mille's RM 67-01 / CRMA6 specification: 38.70 × 47.52 × 7.75 mm case, 29.10 × 31.25 × 3.60 mm movement, 28,800 vph, about 50 h (±10%), 25 jewels, CuBe balance at 7.5 mg·cm² with a 50° lift angle, platinum rotor with OneWay winding on ceramic ball bearings, function hand at 2 o'clock showing W · D · H, semi-instantaneous date in a vertical aperture at 5 o'clock, grade 5 titanium spline screws.</li>
-        <li><b>Corrected from the brief:</b> the selector reads W · D · H (there is no N). RM publishes no variable-geometry rotor or adjustable ribs for the CRMA6 (that idea belongs to other RM calibers), so the rib step and slider became OneWay against a both-ways what-if. The RM 67-01 has no seconds hand; the fourth wheel, which turns once a minute, carries a marker dot instead.</li>
-        <li><b>std.:</b> 20-tooth escape wheel and the 280° → 170° amplitude curve are typical of a Swiss lever movement; RM doesn't publish them for the CRMA6.</li>
-        <li><b>est.:</b> 1,000 rotor turns for a full wind, 6.5 barrel turns, 0.12 winding turns per step, 16 h a day on the wrist, each activity's steps and extra wrist-motion turns (golf 12,000 steps + 60 turns from swings, skiing 6,000 + 250, tennis 9,000 + 200, sailing 4,000 + 250, racing cars 3,000 + 40), and the both-ways × 1.6 factor are estimates chosen to be plausible. They set how fast things wind, not the timekeeping.</li>
-        <li><b>Drawn, not measured:</b> the layout of the wheels in the movement, the number of bezel screws, and the strap and dial details follow the watch's look, not a technical drawing.</li>
-      </ul>
-    </details>
   </section>
 </main>
+
+<section class="specs" id="specs">
+  <h2 class="sech">Specifications</h2>
+  <div class="spgrid">
+    <article><h3>Calibre</h3><p>CRMA6, skeletonised automatic winding. Hours, minutes, date and function indicator.</p>
+      <ul class="kv"><li><span>Dimensions</span><b>29.10 × 31.25 mm</b><i class="src rm">RM</i></li><li><span>Thickness</span><b>3.60 mm</b><i class="src rm">RM</i></li><li><span>Jewels</span><b>25</b><i class="src rm">RM</i></li></ul></article>
+    <article><h3>Power reserve</h3><p>About fifty hours when fully wound. The barrel drains one second per second; the bridle slips when full.</p>
+      <ul class="kv"><li><span>Reserve</span><b>≈ 50 h (±10%)</b><i class="src rm">RM</i></li><li><span>Rotor turns, 0 → full</span><b>1,000</b><i class="src est">est.</i></li><li><span>Barrel turns, 0 → full</span><b>6.5</b><i class="src est">est.</i></li></ul></article>
+    <article><h3>Regulation</h3><p>Free-sprung balance with variable inertia, adjusted by four small weights on the rim.</p>
+      <ul class="kv"><li><span>Frequency</span><b>28,800 vph · 4 Hz · 8 ticks/s</b><i class="src rm">RM</i></li><li><span>Inertia</span><b>7.5 mg·cm²</b><i class="src rm">RM</i></li><li><span>Lift angle</span><b>50°</b><i class="src rm">RM</i></li><li><span>Escape wheel</span><b>20 teeth</b><i class="src std">std.</i></li><li><span>Amplitude</span><b>280° → 170°</b><i class="src std">std.</i></li></ul></article>
+    <article><h3>Winding</h3><p>A platinum rotor on ceramic ball bearings, winding in one direction only through the OneWay system.</p>
+      <ul class="kv"><li><span>Rotor</span><b>Platinum, OneWay</b><i class="src rm">RM</i></li><li><span>Per walking step</span><b>0.12 turns</b><i class="src est">est.</i></li></ul></article>
+    <article><h3>Function selector</h3><p>A hand at 2 o'clock shows the crown's job: W for winding, D for the date, H for setting the hands.</p>
+      <ul class="kv"><li><span>Positions</span><b>W · D · H</b><i class="src rm">RM</i></li><li><span>Date</span><b>Semi-instantaneous, 5 o'clock</b><i class="src rm">RM</i></li></ul></article>
+    <article><h3>Case</h3><p>Tonneau, three parts, screwed through with spline screws. Sapphire front and back.</p>
+      <ul class="kv"><li><span>Dimensions</span><b>38.70 × 47.52 mm</b><i class="src rm">RM</i></li><li><span>Thickness</span><b>7.75 mm</b><i class="src rm">RM</i></li></ul></article>
+  </div>
+</section>
+
+<section class="lab" id="lab">
+  <h2 class="sech">On the wrist</h2>
+  <div class="row2">
+    <div class="panel">
+      <h3>Break it</h3>
+      <div class="acts" role="group" aria-label="Wrist activity">
+        <span class="label">Wrist activity</span>
+        <button type="button" class="act" data-act="walk">Just walking</button>
+        <button type="button" class="act" data-act="golf">Golf</button>
+        <button type="button" class="act" data-act="skiing">Skiing</button>
+        <button type="button" class="act" data-act="tennis">Tennis</button>
+        <button type="button" class="act" data-act="sailing">Sailing</button>
+        <button type="button" class="act" data-act="racing">Racing cars</button>
+      </div>
+      <label class="sl"><span class="label">Steps</span><input id="act" type="range" min="0" max="15000" step="250" value="8000"><output id="actOut"></output></label>
+      <p class="small" id="actWhy"></p>
+      <fieldset class="wind"><legend class="label">Winding</legend>
+        <label><input type="radio" name="wind" value="one" checked> OneWay (the real CRMA6)</label>
+        <label><input type="radio" name="wind" value="both"> Both ways (what-if)</label>
+      </fieldset>
+      <div id="ledger" class="chips"></div>
+      <svg id="week" viewBox="0 0 300 64" preserveAspectRatio="none" class="week" aria-label="Power reserve over a week"></svg>
+      <p class="small" id="weekCap"></p>
+      <p class="small">Step 4 winds by this ledger, and the hollow needle on the gauge shows the reserve left at bedtime once the days repeat.</p>
+    </div>
+    <div class="panel">
+      <h3>Finish</h3>
+      <div class="swatches">
+        <button type="button" class="sw" data-v="rosegold" aria-pressed="true"><i style="--a:#e3ae8e;--b:#4a7bcf"></i>Rose gold</button>
+        <button type="button" class="sw" data-v="titanium" aria-pressed="false"><i style="--a:#3f4352;--b:#ec5a43"></i>Titanium</button>
+        <button type="button" class="sw" data-v="carbon" aria-pressed="false"><i style="--a:#41444c;--b:#3fbf8f"></i>Carbon TPT</button>
+        <button type="button" class="sw" data-v="white" aria-pressed="false"><i style="--a:#ebe7de;--b:#3f74d8"></i>White</button>
+        <button type="button" class="sw" data-v="blue" aria-pressed="false"><i style="--a:#4f7fcf;--b:#f2b632"></i>Blue</button>
+        <button type="button" class="sw" data-v="red" aria-pressed="false"><i style="--a:#dc4f43;--b:#ffffff"></i>Red</button>
+      </div>
+      <p class="small">Recolours the case, the strap and the hands; Carbon TPT also adds its layered pattern. Pairings are illustrative, not the official catalogue.</p>
+    </div>
+  </div>
+</section>
+
+<section class="notes" id="sources">
+  <h2 class="sech">Sources</h2>
+  <ul>
+    <li><b>RM:</b> Richard Mille's published RM 67-01 / CRMA6 specification: 38.70 × 47.52 × 7.75 mm case, 29.10 × 31.25 × 3.60 mm movement, 28,800 vph, about 50 h (±10%), 25 jewels, CuBe balance at 7.5 mg·cm² with a 50° lift angle, platinum rotor with OneWay winding on ceramic ball bearings, function hand at 2 o'clock showing W · D · H, semi-instantaneous date in a vertical aperture at 5 o'clock, grade 5 titanium spline screws.</li>
+    <li><b>Corrected from the brief:</b> the selector reads W · D · H (there is no N). RM publishes no variable-geometry rotor or adjustable ribs for the CRMA6 (that idea belongs to other RM calibers), so the rib step and slider became OneWay against a both-ways what-if. The RM 67-01 has no seconds hand; the fourth wheel, which turns once a minute, carries a marker dot instead.</li>
+    <li><b>std.:</b> 20-tooth escape wheel and the 280° → 170° amplitude curve are typical of a Swiss lever movement; RM doesn't publish them for the CRMA6.</li>
+    <li><b>est.:</b> 1,000 rotor turns for a full wind, 6.5 barrel turns, 0.12 winding turns per step, 16 h a day on the wrist, each activity's steps and extra wrist-motion turns (golf 12,000 steps + 60 turns from swings, skiing 6,000 + 250, tennis 9,000 + 200, sailing 4,000 + 250, racing cars 3,000 + 40), and the both-ways × 1.6 factor are estimates chosen to be plausible. They set how fast things wind, not the timekeeping.</li>
+    <li><b>Drawn, not measured:</b> the layout of the wheels in the movement, the number of bezel screws, and the strap and dial details follow the watch's look, not a technical drawing.</li>
+  </ul>
+</section>
+
+<footer class="foot">
+  <p>RM 67-01 Anatomy is an independent educational explainer. It is not made, endorsed or sponsored by Richard Mille. Richard Mille and RM 67-01 are names of their owner, used here only to identify the watch being explained.</p>
+</footer>
 <script type="module">
 // One small model of the RM 67-01 (caliber CRMA6). Every number the page shows
 // comes from here. Pure: no DOM, no clock, no randomness.
@@ -1942,7 +2031,7 @@ function buildPage() {
 
   // step buttons
   const list = $("#steps");
-  list.innerHTML = STEPS.map((s, i) => `<li><button type="button" data-i="${i}"><span class="n">${i + 1}</span><span class="l">${s.label}</span></button></li>`).join("");
+  list.innerHTML = STEPS.map((s, i) => `<li><button type="button" data-i="${i}"><span class="n">${String(i + 1).padStart(2, "0")}</span><span class="l">${s.label}</span></button></li>`).join("");
   list.addEventListener("click", (e) => {
     const b = e.target.closest("button");
     if (!b || b.disabled) return;
@@ -1969,7 +2058,7 @@ function buildPage() {
     showMe = true;
     autoWait = 0.3;
     renderButtons();
-    $("#fig").scrollIntoView({ behavior: "smooth", block: "center" });
+    $("#machine").scrollIntoView({ behavior: "smooth", block: "start" });
   });
   // swatches
   document.querySelectorAll(".sw").forEach((b) =>

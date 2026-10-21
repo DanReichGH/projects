@@ -4,25 +4,46 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>RM 67-01 Anatomy</title>
-<meta name="description" content="How a Richard Mille RM 67-01 winds itself and keeps time with no battery: an interactive, hand-inked machine driven by one small model.">
+<meta name="description" content="An independent, interactive explainer of how the RM 67-01 Automatic Extra Flat winds itself and keeps time with no battery. Not affiliated with Richard Mille.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600&family=Inter:wght@300;400;500;600&family=Caveat:wght@600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
 <style>/*CSS*/</style>
 </head>
 <body>
-<header class="top">
-  <p class="kicker">Someone asked me</p>
-  <h1>“How does a Richard Mille RM 67-01 wind itself and keep time with no battery?”</h1>
+<header class="bar">
+  <a class="mark" href="#intro">RM 67-01 <span>Anatomy</span></a>
+  <nav class="secnav" aria-label="Sections">
+    <a href="#intro">Introduction</a>
+    <a href="#machine">The movement</a>
+    <a href="#specs">Specifications</a>
+    <a href="#lab">On the wrist</a>
+    <a href="#sources">Sources</a>
+  </nav>
+  <p class="indep">Independent explainer · not affiliated with Richard Mille</p>
 </header>
-<main class="grid">
+
+<section class="hero" id="intro">
+  <p class="eyebrow">Automatic Extra Flat · Caliber CRMA6</p>
+  <h1>No battery.<br>Fifty hours.<br>7.75 millimetres.</h1>
+  <p class="lede">How does a Richard Mille RM 67-01 wind itself and keep time with no battery? Ten steps, one model, every number sourced.</p>
+  <dl class="figures">
+    <div><dt>Thickness</dt><dd>7.75<small>mm</small></dd></div>
+    <div><dt>Power reserve</dt><dd>≈50<small>h</small></dd></div>
+    <div><dt>Frequency</dt><dd>28,800<small>vph</small></dd></div>
+    <div><dt>Movement</dt><dd>3.60<small>mm</small></dd></div>
+  </dl>
+</section>
+
+<main class="grid" id="machine">
   <aside class="side">
+    <p class="label">The sequence</p>
     <div class="mode" role="group" aria-label="Play mode">
       <button type="button" data-mode="manual" aria-pressed="true">Manual</button>
       <button type="button" data-mode="auto" aria-pressed="false">Auto</button>
     </div>
     <ol id="steps" class="steps"></ol>
-    <a href="#" id="restart" class="restart">↺ Start over</a>
+    <a href="#" id="restart" class="restart">Start over</a>
   </aside>
   <section class="stage">
     <p id="hint" class="hint" aria-live="polite"></p>
@@ -34,76 +55,90 @@
     <div id="live" class="chips live">
       <span class="chip lv" data-k="reserve"></span><span class="chip lv" data-k="beats"></span><span class="chip lv" data-k="watch"></span><span class="chip lv" data-k="world"></span><span class="chip lv" data-k="turns"></span><span class="chip lv" data-k="amp"></span><span class="chip lv" data-k="fn"></span>
     </div>
-    <div class="chips facts">
-      <span class="chip">28,800 vph = <b>4 Hz</b> = <b>8 ticks/s</b> <i class="src rm">RM</i></span>
-      <span class="chip">power reserve <b>≈ 50 h</b> (±10%) <i class="src rm">RM</i></span>
-      <span class="chip">movement <b>3.60 mm</b> in a <b>7.75 mm</b> case <i class="src rm">RM</i></span>
-      <span class="chip">case <b>38.70 × 47.52 mm</b> <i class="src rm">RM</i></span>
-      <span class="chip">CRMA6 <b>29.10 × 31.25 mm</b> · 25 jewels <i class="src rm">RM</i></span>
-      <span class="chip">balance 7.5 mg·cm², lift 50° <i class="src rm">RM</i></span>
-      <span class="chip">platinum rotor, <b>OneWay</b> winding <i class="src rm">RM</i></span>
-      <span class="chip">escape wheel 20 teeth <i class="src std">std.</i></span>
-      <span class="chip">amplitude 280° → 170° <i class="src std">std.</i></span>
-      <span class="chip">1,000 rotor turns to fill <i class="src est">est.</i></span>
-      <span class="chip">6.5 barrel turns to fill <i class="src est">est.</i></span>
+    <div class="threes">
+      <p class="label">In three movements</p>
+      <ol class="cards">
+        <li><span class="n">01</span><h3>Wrist → rotor</h3><p>A heavy platinum weight hangs off-centre. Your arm moves; the weight swings and turns.</p></li>
+        <li><span class="n">02</span><h3>Rotor → spring</h3><p>Turning one way only (OneWay), it winds the mainspring through a row of small wheels.</p></li>
+        <li><span class="n">03</span><h3>Spring → tick</h3><p>The spring lets go slowly. The balance swings 8 times a second, letting the gears move one notch at a time.</p></li>
+      </ol>
+      <button type="button" id="showme" class="showme">Play the full sequence</button>
     </div>
-
-    <div class="row2">
-      <div class="panel">
-        <h2>Colour</h2>
-        <div class="swatches">
-          <button type="button" class="sw" data-v="rosegold" aria-pressed="true"><i style="--a:#e3ae8e;--b:#4a7bcf"></i>Rose gold</button>
-          <button type="button" class="sw" data-v="titanium" aria-pressed="false"><i style="--a:#3f4352;--b:#ec5a43"></i>Titanium</button>
-          <button type="button" class="sw" data-v="carbon" aria-pressed="false"><i style="--a:#41444c;--b:#3fbf8f"></i>Carbon TPT</button>
-          <button type="button" class="sw" data-v="white" aria-pressed="false"><i style="--a:#ebe7de;--b:#3f74d8"></i>White</button>
-          <button type="button" class="sw" data-v="blue" aria-pressed="false"><i style="--a:#4f7fcf;--b:#f2b632"></i>Blue</button>
-          <button type="button" class="sw" data-v="red" aria-pressed="false"><i style="--a:#dc4f43;--b:#ffffff"></i>Red</button>
-        </div>
-        <p class="small">Recolours the case, the strap and the hands; Carbon TPT also adds its layered pattern. Colour pairings are illustrative, not RM's catalogue.</p>
-      </div>
-      <div class="panel">
-        <h2>Break it</h2>
-        <div class="acts" role="group" aria-label="Wrist activity">
-          <span>Wrist activity</span>
-          <button type="button" class="act" data-act="walk">Just walking</button>
-          <button type="button" class="act" data-act="golf">Golf</button>
-          <button type="button" class="act" data-act="skiing">Skiing</button>
-          <button type="button" class="act" data-act="tennis">Tennis</button>
-          <button type="button" class="act" data-act="sailing">Sailing</button>
-          <button type="button" class="act" data-act="racing">Racing cars</button>
-        </div>
-        <label class="sl"><span>Steps</span><input id="act" type="range" min="0" max="15000" step="250" value="8000"><output id="actOut"></output></label>
-        <p class="small" id="actWhy"></p>
-        <fieldset class="wind"><legend>Winding</legend>
-          <label><input type="radio" name="wind" value="one" checked> OneWay (the real CRMA6)</label>
-          <label><input type="radio" name="wind" value="both"> Both ways (what-if)</label>
-        </fieldset>
-        <div id="ledger" class="chips"></div>
-        <svg id="week" viewBox="0 0 300 64" class="week" aria-label="Power reserve over a week"></svg>
-        <p class="small" id="weekCap"></p>
-        <p class="small">Step 4 winds by this ledger, and the hollow needle on the gauge shows the reserve left at bedtime once the days repeat.</p>
-      </div>
-    </div>
-
-    <ol class="cards">
-      <li><span class="n">1</span><h3>Wrist → rotor</h3><p>A heavy platinum weight hangs off-centre. Your arm moves; the weight swings and turns.</p></li>
-      <li><span class="n">2</span><h3>Rotor → spring</h3><p>Turning one way only (OneWay), it winds the mainspring through a row of small wheels.</p></li>
-      <li><span class="n">3</span><h3>Spring → tick</h3><p>The spring lets go slowly. The balance swings 8 times a second, letting the gears move one notch at a time.</p></li>
-    </ol>
-    <button type="button" id="showme" class="showme">▶ Show me</button>
-
-    <details class="notes">
-      <summary>Where the numbers come from</summary>
-      <ul>
-        <li><b>RM:</b> Richard Mille's RM 67-01 / CRMA6 specification: 38.70 × 47.52 × 7.75 mm case, 29.10 × 31.25 × 3.60 mm movement, 28,800 vph, about 50 h (±10%), 25 jewels, CuBe balance at 7.5 mg·cm² with a 50° lift angle, platinum rotor with OneWay winding on ceramic ball bearings, function hand at 2 o'clock showing W · D · H, semi-instantaneous date in a vertical aperture at 5 o'clock, grade 5 titanium spline screws.</li>
-        <li><b>Corrected from the brief:</b> the selector reads W · D · H (there is no N). RM publishes no variable-geometry rotor or adjustable ribs for the CRMA6 (that idea belongs to other RM calibers), so the rib step and slider became OneWay against a both-ways what-if. The RM 67-01 has no seconds hand; the fourth wheel, which turns once a minute, carries a marker dot instead.</li>
-        <li><b>std.:</b> 20-tooth escape wheel and the 280° → 170° amplitude curve are typical of a Swiss lever movement; RM doesn't publish them for the CRMA6.</li>
-        <li><b>est.:</b> 1,000 rotor turns for a full wind, 6.5 barrel turns, 0.12 winding turns per step, 16 h a day on the wrist, each activity's steps and extra wrist-motion turns (golf 12,000 steps + 60 turns from swings, skiing 6,000 + 250, tennis 9,000 + 200, sailing 4,000 + 250, racing cars 3,000 + 40), and the both-ways × 1.6 factor are estimates chosen to be plausible. They set how fast things wind, not the timekeeping.</li>
-        <li><b>Drawn, not measured:</b> the layout of the wheels in the movement, the number of bezel screws, and the strap and dial details follow the watch's look, not a technical drawing.</li>
-      </ul>
-    </details>
   </section>
 </main>
+
+<section class="specs" id="specs">
+  <h2 class="sech">Specifications</h2>
+  <div class="spgrid">
+    <article><h3>Calibre</h3><p>CRMA6, skeletonised automatic winding. Hours, minutes, date and function indicator.</p>
+      <ul class="kv"><li><span>Dimensions</span><b>29.10 × 31.25 mm</b><i class="src rm">RM</i></li><li><span>Thickness</span><b>3.60 mm</b><i class="src rm">RM</i></li><li><span>Jewels</span><b>25</b><i class="src rm">RM</i></li></ul></article>
+    <article><h3>Power reserve</h3><p>About fifty hours when fully wound. The barrel drains one second per second; the bridle slips when full.</p>
+      <ul class="kv"><li><span>Reserve</span><b>≈ 50 h (±10%)</b><i class="src rm">RM</i></li><li><span>Rotor turns, 0 → full</span><b>1,000</b><i class="src est">est.</i></li><li><span>Barrel turns, 0 → full</span><b>6.5</b><i class="src est">est.</i></li></ul></article>
+    <article><h3>Regulation</h3><p>Free-sprung balance with variable inertia, adjusted by four small weights on the rim.</p>
+      <ul class="kv"><li><span>Frequency</span><b>28,800 vph · 4 Hz · 8 ticks/s</b><i class="src rm">RM</i></li><li><span>Inertia</span><b>7.5 mg·cm²</b><i class="src rm">RM</i></li><li><span>Lift angle</span><b>50°</b><i class="src rm">RM</i></li><li><span>Escape wheel</span><b>20 teeth</b><i class="src std">std.</i></li><li><span>Amplitude</span><b>280° → 170°</b><i class="src std">std.</i></li></ul></article>
+    <article><h3>Winding</h3><p>A platinum rotor on ceramic ball bearings, winding in one direction only through the OneWay system.</p>
+      <ul class="kv"><li><span>Rotor</span><b>Platinum, OneWay</b><i class="src rm">RM</i></li><li><span>Per walking step</span><b>0.12 turns</b><i class="src est">est.</i></li></ul></article>
+    <article><h3>Function selector</h3><p>A hand at 2 o'clock shows the crown's job: W for winding, D for the date, H for setting the hands.</p>
+      <ul class="kv"><li><span>Positions</span><b>W · D · H</b><i class="src rm">RM</i></li><li><span>Date</span><b>Semi-instantaneous, 5 o'clock</b><i class="src rm">RM</i></li></ul></article>
+    <article><h3>Case</h3><p>Tonneau, three parts, screwed through with spline screws. Sapphire front and back.</p>
+      <ul class="kv"><li><span>Dimensions</span><b>38.70 × 47.52 mm</b><i class="src rm">RM</i></li><li><span>Thickness</span><b>7.75 mm</b><i class="src rm">RM</i></li></ul></article>
+  </div>
+</section>
+
+<section class="lab" id="lab">
+  <h2 class="sech">On the wrist</h2>
+  <div class="row2">
+    <div class="panel">
+      <h3>Break it</h3>
+      <div class="acts" role="group" aria-label="Wrist activity">
+        <span class="label">Wrist activity</span>
+        <button type="button" class="act" data-act="walk">Just walking</button>
+        <button type="button" class="act" data-act="golf">Golf</button>
+        <button type="button" class="act" data-act="skiing">Skiing</button>
+        <button type="button" class="act" data-act="tennis">Tennis</button>
+        <button type="button" class="act" data-act="sailing">Sailing</button>
+        <button type="button" class="act" data-act="racing">Racing cars</button>
+      </div>
+      <label class="sl"><span class="label">Steps</span><input id="act" type="range" min="0" max="15000" step="250" value="8000"><output id="actOut"></output></label>
+      <p class="small" id="actWhy"></p>
+      <fieldset class="wind"><legend class="label">Winding</legend>
+        <label><input type="radio" name="wind" value="one" checked> OneWay (the real CRMA6)</label>
+        <label><input type="radio" name="wind" value="both"> Both ways (what-if)</label>
+      </fieldset>
+      <div id="ledger" class="chips"></div>
+      <svg id="week" viewBox="0 0 300 64" preserveAspectRatio="none" class="week" aria-label="Power reserve over a week"></svg>
+      <p class="small" id="weekCap"></p>
+      <p class="small">Step 4 winds by this ledger, and the hollow needle on the gauge shows the reserve left at bedtime once the days repeat.</p>
+    </div>
+    <div class="panel">
+      <h3>Finish</h3>
+      <div class="swatches">
+        <button type="button" class="sw" data-v="rosegold" aria-pressed="true"><i style="--a:#e3ae8e;--b:#4a7bcf"></i>Rose gold</button>
+        <button type="button" class="sw" data-v="titanium" aria-pressed="false"><i style="--a:#3f4352;--b:#ec5a43"></i>Titanium</button>
+        <button type="button" class="sw" data-v="carbon" aria-pressed="false"><i style="--a:#41444c;--b:#3fbf8f"></i>Carbon TPT</button>
+        <button type="button" class="sw" data-v="white" aria-pressed="false"><i style="--a:#ebe7de;--b:#3f74d8"></i>White</button>
+        <button type="button" class="sw" data-v="blue" aria-pressed="false"><i style="--a:#4f7fcf;--b:#f2b632"></i>Blue</button>
+        <button type="button" class="sw" data-v="red" aria-pressed="false"><i style="--a:#dc4f43;--b:#ffffff"></i>Red</button>
+      </div>
+      <p class="small">Recolours the case, the strap and the hands; Carbon TPT also adds its layered pattern. Pairings are illustrative, not the official catalogue.</p>
+    </div>
+  </div>
+</section>
+
+<section class="notes" id="sources">
+  <h2 class="sech">Sources</h2>
+  <ul>
+    <li><b>RM:</b> Richard Mille's published RM 67-01 / CRMA6 specification: 38.70 × 47.52 × 7.75 mm case, 29.10 × 31.25 × 3.60 mm movement, 28,800 vph, about 50 h (±10%), 25 jewels, CuBe balance at 7.5 mg·cm² with a 50° lift angle, platinum rotor with OneWay winding on ceramic ball bearings, function hand at 2 o'clock showing W · D · H, semi-instantaneous date in a vertical aperture at 5 o'clock, grade 5 titanium spline screws.</li>
+    <li><b>Corrected from the brief:</b> the selector reads W · D · H (there is no N). RM publishes no variable-geometry rotor or adjustable ribs for the CRMA6 (that idea belongs to other RM calibers), so the rib step and slider became OneWay against a both-ways what-if. The RM 67-01 has no seconds hand; the fourth wheel, which turns once a minute, carries a marker dot instead.</li>
+    <li><b>std.:</b> 20-tooth escape wheel and the 280° → 170° amplitude curve are typical of a Swiss lever movement; RM doesn't publish them for the CRMA6.</li>
+    <li><b>est.:</b> 1,000 rotor turns for a full wind, 6.5 barrel turns, 0.12 winding turns per step, 16 h a day on the wrist, each activity's steps and extra wrist-motion turns (golf 12,000 steps + 60 turns from swings, skiing 6,000 + 250, tennis 9,000 + 200, sailing 4,000 + 250, racing cars 3,000 + 40), and the both-ways × 1.6 factor are estimates chosen to be plausible. They set how fast things wind, not the timekeeping.</li>
+    <li><b>Drawn, not measured:</b> the layout of the wheels in the movement, the number of bezel screws, and the strap and dial details follow the watch's look, not a technical drawing.</li>
+  </ul>
+</section>
+
+<footer class="foot">
+  <p>RM 67-01 Anatomy is an independent educational explainer. It is not made, endorsed or sponsored by Richard Mille. Richard Mille and RM 67-01 are names of their owner, used here only to identify the watch being explained.</p>
+</footer>
 <script type="module">
 /*JS*/
 </script>
