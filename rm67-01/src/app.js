@@ -415,8 +415,8 @@ function draw(R) {
   }
   const dr = ease(V.dateRoll);
   const nxt = target;
-  el.dateStrip.innerHTML = dateDigits(V.dateShown, 0) + dateDigits(nxt, 8.2);
-  tr(el.dateStrip, `translate(0 ${r3(-dr * 8.2)})`);
+  el.dateStrip.innerHTML = dateDigits(V.dateShown, 0) + dateDigits(nxt, 7.4);
+  tr(el.dateStrip, `translate(0 ${r3(-dr * 7.4)})`);
   // movement
   const rot = R.rotorDeg + (V.spinVis * 180) / Math.PI;
   tr(el.rotor, `rotate(${r3(rot)})`);
@@ -476,7 +476,7 @@ function draw(R) {
 
 function dateDigits(d, y) {
   const s = String(d).padStart(2, "0");
-  return `<text x="0" y="${r3(y - 0.6)}" class="dnum">${s[0]}</text><text x="0" y="${r3(y + 3.1)}" class="dnum">${s[1]}</text>`;
+  return `<text x="0" y="${r3(y - 0.45)}" class="dnum">${s[0]}</text><text x="0" y="${r3(y + 3.0)}" class="dnum">${s[1]}</text>`;
 }
 
 const pad = (n) => String(n).padStart(2, "0");
@@ -630,6 +630,7 @@ function soundWord(k, text, x, y, rot) {
 }
 
 const VARIANTS = {
+  rosegold: { cs: ["#f8dcc8", "#e3ae8e", "#bf8566"], st: ["#8fb4ea", "#4a7bcf", "#30569b"], ac: ["#ffffff", "#dfe3e8", "#8d95a0"], tpt: false },
   titanium: { cs: ["#e6e8ea", "#c4c9ce", "#9ba2aa"], st: ["#5a5f70", "#3f4352", "#2b2e3b"], ac: ["#ffb3a3", "#ec5a43", "#b9402e"], tpt: false },
   carbon: { cs: ["#7a7e87", "#5a5e67", "#41444c"], st: ["#5a5f70", "#3f4352", "#2b2e3b"], ac: ["#b9f0d8", "#3fbf8f", "#2b8a66"], tpt: true },
   white: { cs: ["#e6e8ea", "#c4c9ce", "#9ba2aa"], st: ["#ffffff", "#ebe7de", "#cfc9bc"], ac: ["#a9c8ff", "#3f74d8", "#2c55a3"], tpt: false },
@@ -716,7 +717,7 @@ window.__rm = {
 };
 
 buildPage();
-applyVariant("titanium");
+applyVariant("rosegold");
 const io = new IntersectionObserver((es) => (visible = es[0].isIntersecting));
 io.observe($("#fig"));
 requestAnimationFrame(frame);

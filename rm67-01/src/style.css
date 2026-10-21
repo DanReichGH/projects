@@ -3,9 +3,10 @@
   --paper2: #fbf8f1;
   --ink: #1f2c4d;
   --shade: #ddd4c3;
-  --cs0: #e6e8ea; --cs1: #c4c9ce; --cs2: #9ba2aa;
-  --st0: #5a5f70; --st1: #3f4352; --st2: #2b2e3b;
-  --ac0: #ffb3a3; --ac1: #ec5a43; --ac2: #b9402e;
+  --cs0: #f8dcc8; --cs1: #e3ae8e; --cs2: #bf8566;
+  --st0: #8fb4ea; --st1: #4a7bcf; --st2: #30569b;
+  --ac0: #ffffff; --ac1: #dfe3e8; --ac2: #8d95a0;
+  --ui0: #ffb3a3; --ui1: #ec5a43; --ui2: #b9402e;
   --blur: rgba(220, 205, 178, 0.55);
   color-scheme: light;
 }
@@ -38,7 +39,7 @@ h1 { margin: 2px 0 0; font-weight: 400; font-size: clamp(24px, 3.2vw, 38px); lin
 .steps button[data-state="later"] { opacity: .45; }
 .steps button[data-state="done"] { opacity: .38; box-shadow: none; }
 .steps button[data-state="done"] .n { background: var(--ink); color: var(--paper); }
-.steps button[data-state="running"] { background: var(--ac1); color: #fff; border-color: var(--ink); }
+.steps button[data-state="running"] { background: var(--ui1); color: #fff; border-color: var(--ink); }
 .steps button[data-state="running"] .n { background: #fff; color: var(--ink); }
 .steps button[data-state="next"]:not(:disabled):hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--shade); }
 .steps button.pulse .n { animation: pulse 1.3s ease-in-out infinite; }
@@ -70,13 +71,13 @@ h1 { margin: 2px 0 0; font-weight: 400; font-size: clamp(24px, 3.2vw, 38px); lin
 .sw i { width: 22px; height: 22px; border-radius: 50%; border: 1.2px solid var(--ink); background: linear-gradient(135deg, var(--a) 55%, var(--b) 55%); }
 .sw[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
 .sl { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; }
-.sl input { width: 100%; accent-color: var(--ac1); }
+.sl input { width: 100%; accent-color: var(--ui1); }
 .sl output { font-size: 16px; min-width: 9.5em; text-align: right; }
 .wind { border: 0; padding: 0; margin: 8px 0; display: flex; flex-wrap: wrap; gap: 4px 16px; }
 .wind legend { float: left; margin-right: 10px; }
 .week { width: 100%; height: 64px; margin-top: 8px; display: block; }
 .week .night { fill: #ebe4d6; }
-.week .wkFill { fill: var(--ac0); opacity: .55; }
+.week .wkFill { fill: var(--ui0); opacity: .55; }
 .week .wkLine { fill: none; stroke: var(--ink); stroke-width: 1.4; vector-effect: non-scaling-stroke; }
 .week .wkAxis { stroke: var(--ink); stroke-width: 1.2; vector-effect: non-scaling-stroke; }
 .cards { list-style: none; margin: 18px 0 8px; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
@@ -103,33 +104,37 @@ h1 { margin: 2px 0 0; font-weight: 400; font-size: clamp(24px, 3.2vw, 38px); lin
 #fig .glint.thinG { stroke-width: 1.2; }
 #fig .spring { fill: none; stroke: #e8eef7; stroke-width: 0.9; }
 #fig .tpt { fill: url(#tptP); stroke: var(--ink); stroke-width: 1.2; }
-#fig .num { font-family: "Patrick Hand", sans-serif; font-size: 3.3px; text-anchor: middle; fill: var(--ink); }
-#fig .fnl { font-family: "Patrick Hand", sans-serif; font-size: 2.2px; text-anchor: middle; fill: var(--ink); }
-#fig .dnum { font-family: "Patrick Hand", sans-serif; font-size: 3.6px; text-anchor: middle; fill: var(--ink); }
+#fig .num { font-family: "Patrick Hand", sans-serif; font-size: 4.4px; text-anchor: middle; fill: #ffffff; stroke: #10141c; stroke-width: 0.5px; paint-order: stroke; vector-effect: none; }
+#fig .fnl { font-family: "Patrick Hand", sans-serif; font-size: 1.9px; text-anchor: middle; fill: #ffffff; }
+#fig .dnum { font-family: "Patrick Hand", sans-serif; font-size: 3.4px; text-anchor: middle; fill: #ffffff; }
+#fig .dateFrame { fill: none; stroke: #f2f2f2; stroke-width: 1; }
+#fig .tickW { fill: none; stroke: #f2f2f2; stroke-width: 0.9; stroke-linecap: round; }
+#fig .tickW.hair { stroke-width: 0.5; }
+#fig .spl { fill: none; stroke: #c9ced6; stroke-width: 0.5; }
 #fig .labBg { fill: var(--paper2); stroke: var(--ink); stroke-width: 1.2; }
 #fig .figno { font-family: Caveat, cursive; font-size: 26px; fill: var(--ink); }
 #fig .figtitle { font-family: "Patrick Hand", sans-serif; font-size: 20px; fill: var(--ink); text-anchor: end; }
 #fig .incap { font-family: Caveat, cursive; font-size: 22px; fill: #59627c; text-anchor: middle; }
 #fig .plateFace { fill: var(--paper2); stroke: var(--ink); stroke-width: 1.2; }
 #fig .arcBg { fill: none; stroke: #e9e2d3; stroke-width: 10; }
-#fig .arcFill { fill: none; stroke: var(--ac1); stroke-width: 10; opacity: .85; }
+#fig .arcFill { fill: none; stroke: var(--ui1); stroke-width: 10; opacity: .85; }
 #fig .gnum { font-size: 12px; text-anchor: middle; fill: var(--ink); font-family: "Patrick Hand", sans-serif; }
 #fig .glab { font-size: 22px; text-anchor: middle; fill: var(--ink); font-family: "Patrick Hand", sans-serif; }
 #fig .gcap { font-size: 17px; text-anchor: middle; fill: #59627c; font-family: Caveat, cursive; font-weight: 700; }
 #fig .gsmall { font-size: 13px; text-anchor: middle; fill: #59627c; font-family: "Patrick Hand", sans-serif; }
-#fig .needle { fill: var(--ac1); stroke: var(--ink); stroke-width: 1.2; }
+#fig .needle { fill: var(--ui1); stroke: var(--ink); stroke-width: 1.2; }
 #fig .ghost { fill: none; stroke: var(--ink); stroke-width: 1.2; stroke-dasharray: 4 3; }
 #fig .hub { fill: var(--ink); }
 #fig .odo { fill: var(--ink); }
 #fig .odoT { fill: var(--paper); font-family: "Patrick Hand", monospace; font-size: 22px; text-anchor: middle; letter-spacing: 1px; }
 #fig .tickFace { fill: var(--paper); stroke: var(--ink); stroke-width: 1.2; }
-#fig .tickNeedle { stroke: var(--ac1); stroke-width: 2.4; stroke-linecap: round; }
-#fig .flash { fill: var(--ac1); stroke: var(--ink); stroke-width: 1.2; }
+#fig .tickNeedle { stroke: var(--ui1); stroke-width: 2.4; stroke-linecap: round; }
+#fig .flash { fill: var(--ui1); stroke: var(--ink); stroke-width: 1.2; }
 #fig .badge { fill: var(--ink); }
 #fig .badgeT { fill: var(--paper); font-family: "Patrick Hand", sans-serif; font-size: 21px; text-anchor: middle; }
-#fig .snd { font-family: Caveat, cursive; font-weight: 700; font-size: 30px; fill: var(--ac2); text-anchor: middle; paint-order: stroke; stroke: var(--paper); stroke-width: 4px; stroke-linejoin: round; }
+#fig .snd { font-family: Caveat, cursive; font-weight: 700; font-size: 30px; fill: var(--ui2); text-anchor: middle; paint-order: stroke; stroke: var(--paper); stroke-width: 4px; stroke-linejoin: round; }
 #fig [data-lit] { transition: filter .35s; }
-#fig .lit { filter: drop-shadow(0 0 2.2px var(--ac1)) drop-shadow(0 0 0.6px var(--ac1)); }
+#fig .lit { filter: drop-shadow(0 0 2.2px var(--ui1)) drop-shadow(0 0 0.6px var(--ui1)); }
 
 @media (max-width: 860px) {
   .grid { grid-template-columns: minmax(0, 1fr); padding: 10px 16px 40px; }
@@ -147,5 +152,5 @@ h1 { margin: 2px 0 0; font-weight: 400; font-size: clamp(24px, 3.2vw, 38px); lin
   .sl output { min-width: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .steps button.pulse .n { animation: none; outline: 2px solid var(--ac1); }
+  .steps button.pulse .n { animation: none; outline: 2px solid var(--ui1); }
 }

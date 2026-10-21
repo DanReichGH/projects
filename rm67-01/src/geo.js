@@ -48,21 +48,38 @@ function hull(points) {
   return lo.slice(0, -1).concat(up.slice(0, -1));
 }
 
-// Tonneau: a superellipse, local X half-width a, Y half-length b.
+// Tonneau: a superellipse pinched toward 12 and 6, so the sides bow out like a barrel.
+// Local X half-width a (at the middle), Y half-length b.
+const PINCH = 0.2;
+const barrel = (Y, b) => 1 - PINCH * (Y / b) ** 2;
+
 function tonneau(a, b, n = 4.2, N = 96) {
   const out = [];
   for (let i = 0; i < N; i++) {
     const t = (i / N) * Math.PI * 2;
     const c = Math.cos(t);
     const s = Math.sin(t);
-    out.push([a * Math.sign(c) * Math.abs(c) ** (2 / n), b * Math.sign(s) * Math.abs(s) ** (2 / n)]);
+    const Y = b * Math.sign(s) * Math.abs(s) ** (2 / n);
+    out.push([a * barrel(Y, b) * Math.sign(c) * Math.abs(c) ** (2 / n), Y]);
   }
   return out;
 }
 
-// Distance from centre to a superellipse edge along polar angle th (local frame).
+// Distance from centre to the tonneau edge along polar angle th (local frame).
 function tonneauR(a, b, th, n = 4.2) {
-  return (Math.abs(Math.cos(th) / a) ** n + Math.abs(Math.sin(th) / b) ** n) ** (-1 / n);
+  const inside = (r) => {
+    const X = r * Math.cos(th);
+    const Y = r * Math.sin(th);
+    return Math.abs(X / (a * barrel(Y, b))) ** n + Math.abs(Y / b) ** n <= 1;
+  };
+  let lo = 0;
+  let hi = Math.max(a, b);
+  for (let i = 0; i < 30; i++) {
+    const m = (lo + hi) / 2;
+    if (inside(m)) lo = m;
+    else hi = m;
+  }
+  return lo;
 }
 
 function roundRect(x0, y0, x1, y1, r, N = 8) {
